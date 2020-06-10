@@ -3,7 +3,7 @@ module.exports = {
     const result = {};
     result.data = data || "";
     result.statusCode = statusCode || 200;
-    result.statusExecution = statusExecution === "success" ? "success" : "fail";
+    result.statusExecution = statusExecution === "success" ? "success" : "failed";
 
     return res.status(result.statusCode).json({
       statusExecution: result.statusExecution,

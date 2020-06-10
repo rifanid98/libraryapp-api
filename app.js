@@ -21,10 +21,10 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 // import dotenv
 require('dotenv').config();
-// import custom global config
-const config = require('./src/configs/global');
-// import custom response
-const myResponse = require("./src/helpers/myResponse");
+// import multer
+const multer = require('multer');
+// instance of multer
+const upload = multer({ dest: 'src/assets/images/' })
 
 /**============================= CORS ============================= */
 
@@ -55,16 +55,23 @@ app.use(bodyParser.json());
 /**============================ Routes ============================ */
 
 /**
+ * Multer
+ * .
+ * Menerima data form
+ */
+// for parsing multipart/form-data
+app.use(upload.array());
+// app.use(express.static(''));
+
+/**
  * Routes
  * .
- * My Custom Controllers
+ * Load all routes in one file
  */
-// example
-// const productControllers = require("./controllers/c_product");
-const bookController = require("./controllers/c_book");
-
-// fire the controllers
-app.use('/libraryapp/api/book', bookController);
+// Load routes
+const routes = require('./src/routes/r_index');
+// set the routes
+app.use('/libraryapp/api', routes);
 
 /**============================= URLs ============================= */
 
