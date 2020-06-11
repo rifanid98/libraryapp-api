@@ -21,7 +21,6 @@ const path = 'src/assets/images/';
 // import joi
 const joi = require('joi');
 
-
 /**
  * Custom Function
  */
@@ -118,8 +117,18 @@ async function post_book(req,res) {
             book_image: req.file.filename
         }
         const result = await books_model.add_data(data);
-        
-        return myResponse.response(res, "success", data, 200, "Ok!");
+        if (result.affectedRows > 0) {
+            return myResponse.response(res, "success", data, 201, "Created!");
+        } else {
+            if (fs.existsSync(global.appRoot + '/' + path + data.book_image)) {
+                try {
+                    fs.unlinkSync(global.appRoot + '/' + path + data.book_image);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            return myResponse.response(res, "failed", data, 404, "Not Found!");
+        }
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", result, 500, "Internal Server Error")
