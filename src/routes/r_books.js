@@ -15,7 +15,6 @@ const upload = require('../helpers/upload');
 // load the controller
 const books_controller = require('../controllers/c_books');
 
-
 // Get All Books
 router.get('/', books_controller.get_books);
 // Post a Book
