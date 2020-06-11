@@ -19,7 +19,7 @@ const fs = require('fs')
 const path = 'src/assets/images/';
 
 // import joi
-const joi = require('joi');
+const validate = require('../helpers/joiSchema');
 
 /**
  * Custom Function
@@ -89,6 +89,8 @@ String.prototype.escape = function () {
  */
 async function get_books(req,res) {
     try {
+        console.log(req.body);
+        
         const filters = req.query;
         const fields = await dbviews_model.get_book_and_genre_field_name();
         const total_data = await books_model.get_all_data();
@@ -105,12 +107,14 @@ async function get_books(req,res) {
         return myResponse.response(res, "success", result, 200, "Ok!");
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error")
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 
 async function post_book(req,res) {
     try {
+        const fieldToPatch = Object.keys(req.body);
+        const error = await validate.validate_books(req.body, fieldToPatch);
         const body = req.body;
         const data = {
             ...body,
@@ -131,12 +135,15 @@ async function post_book(req,res) {
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error")
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 
 async function patch_book(req,res) {
     try {
+        const fieldToPatch = Object.keys(req.body);
+        const error = await validate.validate_books(req.body, fieldToPatch);
+
         const id = req.params.id;
         const old_data = await get_book_by_id(id);
         const body = req.body;
@@ -150,6 +157,7 @@ async function patch_book(req,res) {
             book_id: id,
             ...data
         }
+
         if (result.affectedRows > 0) {
             if (fs.existsSync(global.appRoot + '/' + path + old_data[0].book_image)) {
                 try {
@@ -162,10 +170,10 @@ async function patch_book(req,res) {
         } else {
             return myResponse.response(res, "failed", newData, 404, "Not Found!");
         }
-        
+
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error")
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 
@@ -185,7 +193,7 @@ async function delete_book(req,res) {
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error")
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 
