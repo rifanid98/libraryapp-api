@@ -14,7 +14,7 @@ const book_genres_model = require("../models/m_book_genres");
 const myResponse = require("../helpers/myResponse");
 
 // import joi
-const joi = require('joi');
+const validate = require('../helpers/joiSchema');
 
 /**
  * CRUD
@@ -28,14 +28,15 @@ async function get_book_genres(req, res) {
         return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error");
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error");
     }
 }
 
 //================ POST ====================//
 async function post_book_genre(req, res) {
-    
     try {
+        const error = await validate.validate_book_genres(req.body);
+
         const data = req.body;
         let result = await book_genres_model.get_data_by_name(data);
         console.log(data);
@@ -48,13 +49,15 @@ async function post_book_genre(req, res) {
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error");
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error");
     }
 }
 
 //================ PATCH ====================//
 async function patch_book_genre(req, res) {
     try {
+        const error = await validate.validate_book_genres(req.body);
+
         const data = req.body;
         const id = req.params.id;
         const result = await book_genres_model.update_data(data, id);
@@ -66,7 +69,7 @@ async function patch_book_genre(req, res) {
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error");
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error");
     }
 }
 
@@ -86,7 +89,7 @@ async function delete_book_genre(req, res) {
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", result, 500, "Internal Server Error");
+        return myResponse.response(res, "failed", "", 500, "Internal Server Error");
     }
 }
 
