@@ -21,10 +21,12 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 // import dotenv
 require('dotenv').config();
-// import multer
-const multer = require('multer');
-// instance of multer
-const upload = multer({ dest: 'src/assets/images/' })
+
+/**
+ * Global Root Path
+ */
+const path = require('path');
+global.appRoot = path.resolve(__dirname);
 
 /**============================= CORS ============================= */
 
@@ -60,8 +62,7 @@ app.use(bodyParser.json());
  * Menerima data form
  */
 // for parsing multipart/form-data
-app.use(upload.array());
-// app.use(express.static(''));
+app.use(express.static('src/assets/images'));
 
 /**
  * Routes
@@ -71,7 +72,7 @@ app.use(upload.array());
 // Load routes
 const routes = require('./src/routes/r_index');
 // set the routes
-app.use('/libraryapp/api', routes);
+app.use('/libraryapp-api', routes);
 
 /**============================= URLs ============================= */
 
