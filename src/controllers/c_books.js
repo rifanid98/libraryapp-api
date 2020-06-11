@@ -4,6 +4,7 @@
  * Load Model
  */
 const books_model = require("../models/m_books");
+const dbviews_model = require("../models/m_dbviews");
 
 /**
  * custom response helper
@@ -13,62 +14,96 @@ const books_model = require("../models/m_books");
  */
 const myResponse = require("../helpers/myResponse");
 
+// import fs
+const fs = require('fs')
+const path = 'src/assets/images/';
+
+// import joi
+const joi = require('joi');
+
+
 /**
  * Custom Function
  */
 
-function generate_like(filters){
-    
-    let result = "";
-    const length = Object.keys(filters).length -1;
-    let i = 0;
-    for (key in filters) {
-        const filter = "'%" + filters[key] + "%'";
-        let field = "book_" + key;
-        if (key == "genre") {
-            field = "book_" + key + "_name";
+function generate_filters(filters, fields) {
+    let search = {};
+    let pagination = {};
+    let sort = {};
+    // get search filters
+    for (field in fields) {
+        // ambil field name
+        const field_name = fields[field].split('_')[1];
+
+        for (filter in filters) {
+            // masukin ke search
+            if (filter == field_name) {
+                if (filter in search == false) {
+                    search[filter] = filters[filter].escape();
+                }
+            }
         }
-        result += (i == length) ? field + " LIKE " + filter : field + " LIKE " + filter + " OR ";
-        i++;
     }
-    return result;
+    // get pagination filters
+    for (filter in filters) {
+        if ("page" in filters || "limit" in filters) {
+            pagination[filter] = filters[filter].escape();
+        }
+    }
+    // get sort filters
+    if ("sort" in filters) {
+        sort["sort"] = filters["sort"].escape();
+    }
+    
+    return {
+        search,
+        pagination,
+        sort
+    };
 }
+
+async function get_book_by_id(id) {
+    try {
+        const result = await books_model.get_data_by_id(id);
+        return result;
+    } catch (error) {
+        console.log(error);
+        return 'error';
+    }
+}
+
+String.prototype.escape = function () {
+  var tagsToReplace = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&apos;",
+    '"': "&quot;"
+  };
+  return this.replace(/[&<>\'\"]/g, function (tag) {
+    return tagsToReplace[tag] || tag;
+  });
+};
 
 /**
  * CRUD
  */
-
 async function get_books(req,res) {
     try {
         const filters = req.query;
-        const filters_length = Object.keys(filters).length;
-        let result;
-        
-        if (filters_length > 0) {
-            if ("sort" in filters && "page" in filters && filters_length > 2) {
-                result = "sort + page + search";
-            }
-            if ("sort" in filters && "page" in filters && filters_length == 2) {
-                result = "sort + page";
-            }
-            if ("sort" in filters && "page" in filters == false && filters_length > 1) {
-                result = "sort + search";
-            }
-            if ("sort" in filters && filters_length == 1) {
-                result = "sort only";
-            }
-            if ("page" in filters && "sort" in filters == false && filters_length > 1) {
-                result = "page + search";
-            }
-            if ("page" in filters && filters_length == 1) {
-                result = "page + all_data ";
-            }
-        } else {
-            result = "all_data only";
-        }
-        
-        res.json(result);
-        // return myResponse.response(res, "success", result, 200, "Ok!");
+        const fields = await dbviews_model.get_book_and_genre_field_name();
+        const total_data = await books_model.get_all_data();
+        const generated_filters = generate_filters(filters, fields);
+
+        const new_filters = {
+            search: generated_filters.search,
+            pagination: generated_filters.pagination,
+            sort: generated_filters.sort
+        };
+
+        const result = await books_model.get_data_custom(new_filters, total_data.length);
+        // res.send(result);
+        return myResponse.response(res, "success", result, 200, "Ok!");
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", result, 500, "Internal Server Error")
@@ -77,9 +112,12 @@ async function get_books(req,res) {
 
 async function post_book(req,res) {
     try {
-        const data = req.body;
+        const body = req.body;
+        const data = {
+            ...body,
+            book_image: req.file.filename
+        }
         const result = await books_model.add_data(data);
-        console.log(data);
         
         return myResponse.response(res, "success", data, 200, "Ok!");
     } catch (error) {
@@ -90,8 +128,13 @@ async function post_book(req,res) {
 
 async function patch_book(req,res) {
     try {
-        const data =  req.body;
         const id = req.params.id;
+        const old_data = await get_book_by_id(id);
+        const body = req.body;
+        const data = {
+            ...body,
+            book_image: req.file.filename
+        }
         const result = await books_model.update_data(data, id);
 
         const newData = {
@@ -99,7 +142,14 @@ async function patch_book(req,res) {
             ...data
         }
         if (result.affectedRows > 0) {
-            return myResponse.response(res, "success", newData, 200, "Updated!");
+            if (fs.existsSync(global.appRoot + '/' + path + old_data[0].book_image)) {
+                try {
+                    fs.unlinkSync(global.appRoot + '/' + path + old_data[0].book_image);
+                } catch (error) {
+                    console.log(error);
+                }
+                return myResponse.response(res, "success", newData, 200, "Updated!");
+            }
         } else {
             return myResponse.response(res, "failed", newData, 404, "Not Found!");
         }
