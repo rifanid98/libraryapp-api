@@ -13,6 +13,9 @@ const book_genres_model = require("../models/m_book_genres");
  */
 const myResponse = require("../helpers/myResponse");
 
+// import joi
+const joi = require('joi');
+
 /**
  * CRUD
  */
@@ -31,6 +34,7 @@ async function get_book_genres(req, res) {
 
 //================ POST ====================//
 async function post_book_genre(req, res) {
+    
     try {
         const data = req.body;
         let result = await book_genres_model.get_data_by_name(data);
