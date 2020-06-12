@@ -22,6 +22,9 @@ const bcrypt = require("bcrypt");
 // import jwt
 const jwt = require('jsonwebtoken');
 
+// import
+const config = require('../configs/global');
+
 module.exports = {
   register: async function (req, res) {
     try {
@@ -47,8 +50,16 @@ module.exports = {
 
       const result = await auth_model.login(data.user_name);
       if (bcrypt.compareSync(data.user_password, result[0].user_password)) {
-        return myResponse.response(res, "success", data, 200, "Ok!");
+        delete result[0].user_password;
         
+        // jsonwebtoken
+        const tokenData = {
+          ...result[0]
+        }
+        const token = jwt.sign(tokenData, config.jwtSecretKey, {expiresIn: "10m"});
+        result[0].token = token;
+
+        return myResponse.response(res, "success", result, 200, "Ok!");
       } else {
         return myResponse.response( res, "failed", "Username or Password is wrong!", 400, "Internal Server Error");
       }
