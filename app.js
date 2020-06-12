@@ -25,6 +25,7 @@ require('dotenv').config();
 /**
  * Global Root Path
  */
+const config = require('./src/configs/global');
 const path = require('path');
 global.appRoot = path.resolve(__dirname);
 
@@ -62,7 +63,8 @@ app.use(bodyParser.json());
  * Menerima data form
  */
 // for parsing multipart/form-data
-app.use("/libraryapp-api", express.static("src/assets/"));
+app.use(`/${config.rootProjectPath}`, express.static("src/assets/"));
+// app.use("/libraryapp-api", express.static("src/assets/"));
 
 /**
  * Routes
@@ -72,7 +74,8 @@ app.use("/libraryapp-api", express.static("src/assets/"));
 // Load routes
 const routes = require('./src/routes/r_index');
 // set the routes
-app.use('/libraryapp-api', routes);
+app.use(`/${config.rootProjectPath}`, routes);
+// app.use('/libraryapp-api', routes);
 
 /**============================= URLs ============================= */
 
