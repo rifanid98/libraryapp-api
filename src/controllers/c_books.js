@@ -89,8 +89,6 @@ String.prototype.escape = function () {
  */
 async function get_books(req,res) {
     try {
-        console.log(req.body);
-        
         const filters = req.query;
         const fields = await dbviews_model.get_book_and_genre_field_name();
         const total_data = await books_model.get_all_data();
