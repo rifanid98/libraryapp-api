@@ -62,5 +62,42 @@ module.exports = {
             }
             resolve({ error: false });
         });
+    },
+    validate_register: function (user_data) {
+        const joiSchema = {
+            user_name: Joi.string().trim().min(3).required(),
+            user_password: Joi.string().trim().min(3).required(),
+            user_role: Joi.number().min(1).required()
+        };
+
+        return new Promise((resolve, reject) => {
+            const error = Joi.validate(user_data, joiSchema);
+
+            if (error.error != null) {
+                reject({
+                    error: true,
+                    message: error
+                });
+            }
+            resolve({ error: false });
+        });
+    },
+    validate_login: function (user_data) {
+        const joiSchema = {
+            user_name: Joi.string().trim().min(3).required(),
+            user_password: Joi.string().trim().min(3).required()
+        };
+
+        return new Promise((resolve, reject) => {
+            const error = Joi.validate(user_data, joiSchema);
+
+            if (error.error != null) {
+                reject({
+                    error: true,
+                    message: error
+                });
+            }
+            resolve({ error: false });
+        });
     }
 }
