@@ -21,6 +21,7 @@ module.exports = {
         const joiSchema = {
             book_title: Joi.string().trim().min(3).required(),
             book_description: Joi.string().trim().min(3).required(),
+            // book_image: Joi.required(),
             book_author: Joi.string().trim().min(3).required(),
             book_status: Joi.number().min(0).max(1).required(),
             book_genre_id: Joi.number().min(0).required()
