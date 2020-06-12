@@ -25,6 +25,17 @@ const validate = require('../helpers/joiSchema');
  * Custom Function
  */
 
+function delete_image(file_name) {
+    console.log(global.appRoot + "/" + path + file_name);
+    if (fs.existsSync(global.appRoot + "/" + path + file_name)) {
+      try {
+        fs.unlinkSync(global.appRoot + "/" + path + file_name);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+}
+
 function generate_filters(filters, fields) {
     let search = {};
     let pagination = {};
@@ -110,10 +121,10 @@ async function get_books(req,res) {
 }
 
 async function post_book(req,res) {
+    const body = req.body;
+    const fieldToPatch = Object.keys(req.body);
     try {
-        const fieldToPatch = Object.keys(req.body);
-        const error = await validate.validate_books(req.body, fieldToPatch);
-        const body = req.body;
+        await validate.validate_books(req.body, fieldToPatch);
         const data = {
             ...body,
             book_image: req.file.filename
@@ -122,18 +133,17 @@ async function post_book(req,res) {
         if (result.affectedRows > 0) {
             return myResponse.response(res, "success", data, 201, "Created!");
         } else {
-            if (fs.existsSync(global.appRoot + '/' + path + data.book_image)) {
-                try {
-                    fs.unlinkSync(global.appRoot + '/' + path + data.book_image);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
+            // delete new image when insert data is failed
+            delete_image(req.file.filename);
             return myResponse.response(res, "failed", data, 404, "Not Found!");
         }
     } catch (error) {
+        if ('joiError' in error) {
+            // delete new image when validation error
+            delete_image(req.file.filename);
+        }
         console.log(error);
-        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
+        return myResponse.response(res, "failed", error, 500, "Internal Server Error")
     }
 }
 
@@ -144,6 +154,7 @@ async function patch_book(req,res) {
 
         const id = req.params.id;
         const old_data = await get_book_by_id(id);
+        
         const body = req.body;
         const data = {
             ...body,
@@ -157,19 +168,20 @@ async function patch_book(req,res) {
         }
 
         if (result.affectedRows > 0) {
-            if (fs.existsSync(global.appRoot + '/' + path + old_data[0].book_image)) {
-                try {
-                    fs.unlinkSync(global.appRoot + '/' + path + old_data[0].book_image);
-                } catch (error) {
-                    console.log(error);
-                }
-                return myResponse.response(res, "success", newData, 200, "Updated!");
-            }
+            // delete old image
+            delete_image(old_data[0].book_image);
+            return myResponse.response(res, "success", newData, 200, "Updated!");
         } else {
+            // delete new image when update data is failed
+            delete_image(req.file.filename);
             return myResponse.response(res, "failed", newData, 404, "Not Found!");
         }
 
     } catch (error) {
+        if ("joiError" in error) {
+            // delete new image when validation error
+          delete_image(req.file.filename);
+        }
         console.log(error);
         return myResponse.response(res, "failed", "", 500, "Internal Server Error")
     }
@@ -179,11 +191,7 @@ async function delete_book(req,res) {
     try {
         const id = req.params.id;
         const result = await books_model.delete_data(id);
-
-        const data = {
-            book_id: id
-        }
-
+        const data = {book_id: id}
         if (result.affectedRows > 0){
             return myResponse.response(res, "success", data, 200, "Deleted!");
         } else {
