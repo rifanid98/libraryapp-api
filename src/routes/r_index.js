@@ -6,6 +6,9 @@ const express = require('express');
 // instance of express router
 const router = express.Router();
 
+// import middleware
+const auth_middleware = require('../middleware/mdl_auth');
+
 /**
  * Load All Routes
  */
@@ -17,9 +20,9 @@ const users_router = require('./r_users');
 /**
  * Fire the router
  */
-router.use('/books', books_router);
-router.use('/book_genres', book_genres_router);
+router.use('/books', auth_middleware.verifyJwtToken, books_router);
+router.use('/book_genres', auth_middleware.verifyJwtToken, book_genres_router);
 router.use('/auth', auth_router);
-router.use('/users', users_router);
+router.use("/users", auth_middleware.verifyJwtToken, users_router);
 
 module.exports = router;
