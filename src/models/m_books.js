@@ -54,6 +54,7 @@ module.exports = {
             if (Object.keys(filters.sort).length > 0) {
                 sqlQuery += " ORDER BY book_" + filters.sort.sort + " ";
             }
+
             // pagination
             if (Object.keys(filters.pagination).length > 0) {
                 let data_per_page = 5; 
@@ -69,15 +70,13 @@ module.exports = {
                 let first_data = (data_per_page * active_page) - data_per_page;
                 sqlQuery += ("page" in filters.pagination) ? " LIMIT " + first_data + ", " + data_per_page + " " : "";
             }
+            
             conn.query(sqlQuery, filters.search, function (error, result) {
                 if (error) {
                     reject(error);
                 }
                 resolve(result);
             })
-            
-            // resolve(sqlQuery);
-            
         })
     },
 
