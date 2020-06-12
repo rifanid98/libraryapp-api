@@ -17,19 +17,21 @@ const myResponse = require("../helpers/myResponse");
 // import fs
 const fs = require('fs')
 const path = 'src/assets/images/';
+const image_path = global.appRoot + "/" + path;
 
 // import joi
 const validate = require('../helpers/joiSchema');
 
+// import config
+const config = require('../configs/global');
+
 /**
  * Custom Function
  */
-
 function delete_image(file_name) {
-    console.log(global.appRoot + "/" + path + file_name);
-    if (fs.existsSync(global.appRoot + "/" + path + file_name)) {
+    if (fs.existsSync(image_path + file_name)) {
       try {
-        fs.unlinkSync(global.appRoot + "/" + path + file_name);
+        fs.unlinkSync(image_path + file_name);
       } catch (error) {
         console.log(error);
       }
@@ -121,21 +123,25 @@ async function get_books(req,res) {
 }
 
 async function post_book(req,res) {
-    const body = req.body;
-    const fieldToPatch = Object.keys(req.body);
     try {
-        await validate.validate_books(req.body, fieldToPatch);
-        const data = {
-            ...body,
-            book_image: req.file.filename
-        }
-        const result = await books_model.add_data(data);
-        if (result.affectedRows > 0) {
-            return myResponse.response(res, "success", data, 201, "Created!");
+        if (req.file) {
+            const body = req.body;
+            const fieldToPatch = Object.keys(req.body);
+            await validate.validate_books(req.body, fieldToPatch);
+            const data = {
+              ...body,
+              book_image: `${config.imageStaticPath(req)}${req.file.filename}`
+            };
+            const result = await books_model.add_data(data);
+            if (result.affectedRows > 0) {
+              return myResponse.response(res, "success", data, 201, "Created!");
+            } else {
+              // delete new image when insert data is failed
+              delete_image(req.file.filename);
+              return myResponse.response( res, "failed", data, 404, "Not Found!");
+            }
         } else {
-            // delete new image when insert data is failed
-            delete_image(req.file.filename);
-            return myResponse.response(res, "failed", data, 404, "Not Found!");
+            return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
         }
     } catch (error) {
         if ('joiError' in error) {
@@ -149,34 +155,37 @@ async function post_book(req,res) {
 
 async function patch_book(req,res) {
     try {
-        const fieldToPatch = Object.keys(req.body);
-        const error = await validate.validate_books(req.body, fieldToPatch);
+        if (req.file) {
+            const fieldToPatch = Object.keys(req.body);
+            const error = await validate.validate_books(req.body, fieldToPatch);
 
-        const id = req.params.id;
-        const old_data = await get_book_by_id(id);
-        
-        const body = req.body;
-        const data = {
+            const id = req.params.id;
+            const old_data = await get_book_by_id(id);
+
+            const body = req.body;
+            const data = {
             ...body,
-            book_image: req.file.filename
-        }
-        const result = await books_model.update_data(data, id);
+            book_image: req.file.filename,
+            };
+            const result = await books_model.update_data(data, id);
 
-        const newData = {
+            const newData = {
             book_id: id,
-            ...data
-        }
+            ...data,
+            };
 
-        if (result.affectedRows > 0) {
+            if (result.affectedRows > 0) {
             // delete old image
             delete_image(old_data[0].book_image);
             return myResponse.response(res, "success", newData, 200, "Updated!");
-        } else {
+            } else {
             // delete new image when update data is failed
             delete_image(req.file.filename);
             return myResponse.response(res, "failed", newData, 404, "Not Found!");
+            }
+        } else {
+            return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
         }
-
     } catch (error) {
         if ("joiError" in error) {
             // delete new image when validation error
