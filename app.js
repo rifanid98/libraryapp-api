@@ -62,7 +62,7 @@ app.use(bodyParser.json());
  * Menerima data form
  */
 // for parsing multipart/form-data
-app.use(express.static('src/assets/images'));
+app.use("/libraryapp-api", express.static("src/assets/"));
 
 /**
  * Routes
