@@ -3,12 +3,24 @@
  */
 const Joi = require('joi');
 
+/**
+ * Custom Joi Error Handling
+ */
+function myError(error) {
+    const joiError = error.error.details[0];
+    const errorMessage = {
+        joiError: 'joi',
+        message: joiError.message
+    };
+    
+    return errorMessage;
+}
+
 module.exports = {
     validate_books: function(book, field = null) {
         const joiSchema = {
             book_title: Joi.string().trim().min(3).required(),
             book_description: Joi.string().trim().min(3).required(),
-            book_image: Joi.required(),
             book_author: Joi.string().trim().min(3).required(),
             book_status: Joi.number().min(0).max(1).required(),
             book_genre_id: Joi.number().min(0).required()
@@ -19,12 +31,9 @@ module.exports = {
                 const error = Joi.validate(book, joiSchema);
 
                 if (error.error != null) {
-                    reject({
-                        error: true,
-                        message: error
-                    });
+                  reject(myError(error));
                 }
-                resolve({ error: false });
+                resolve();
             });
         } else {
             const dynamicSchema = Object.keys(joiSchema)
@@ -34,15 +43,12 @@ module.exports = {
                     return obj;
                 }, {});
             return new Promise((resolve, reject) => {
-                const error = Joi.validate(book, dynamicSchema);
+                const error = Joi.validate(book, joiSchema);
 
                 if (error.error != null) {
-                    reject({
-                        error: true,
-                        message: error
-                    });
+                  reject(myError(error));
                 }
-                resolve({ error: false });
+                resolve();
             });
         }
     },
@@ -55,12 +61,9 @@ module.exports = {
             const error = Joi.validate(book_genres, joiSchema);
 
             if (error.error != null) {
-                reject({
-                    error: true,
-                    message: error
-                });
+                reject(myError(error));
             }
-            resolve({ error: false });
+            resolve();
         });
     },
     validate_register: function (user_data) {
@@ -73,13 +76,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const error = Joi.validate(user_data, joiSchema);
 
-            if (error.error != null) {
-                reject({
-                    error: true,
-                    message: error
-                });
-            }
-            resolve({ error: false });
+           if (error.error != null) {
+             reject(myError(error));
+           }
+           resolve();
         });
     },
     validate_login: function (user_data) {
@@ -91,13 +91,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const error = Joi.validate(user_data, joiSchema);
 
-            if (error.error != null) {
-                reject({
-                    error: true,
-                    message: error
-                });
-            }
-            resolve({ error: false });
+           if (error.error != null) {
+             reject(myError(error));
+           }
+           resolve();
         });
     }
 }
