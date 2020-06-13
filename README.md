@@ -4,8 +4,8 @@
 Untuk mengakses api yang disediakan, harus memiliki akses dengan login terlebih dahulu
 
 **URL API**
-> http://localhost:3000/auth/login [POST]
-> http://localhost:3000/auth/register [POST]
+> http://localhost:3000/auth/login [POST] <br>
+> http://localhost:3000/auth/register [POST] <br>
 
 ### 1. Login API
 > http://localhost:3000/auth/login [POST]
@@ -74,9 +74,9 @@ Hasil ketika sukses:
 Mengakses buku, detail buku dan pencarian
 
 **URL API**
-> http://localhost:3000/libraryapp-api/books [GET]
-> http://localhost:3000/libraryapp-api/books [POST]
-> http://localhost:3000/libraryapp-api/books/:id [PATCH]
+> http://localhost:3000/libraryapp-api/books [GET]<br>
+> http://localhost:3000/libraryapp-api/books [POST]<br>
+> http://localhost:3000/libraryapp-api/books/:id [PATCH]<br>
 > http://localhost:3000/libraryapp-api/books/:id [DELETE]
 
 ### 1. GET Books
@@ -214,9 +214,9 @@ Hasil ketika sukses:
 Mengakses genre buku
 
 **URL API**
-> http://localhost:3000/libraryapp-api/book_genres [GET]
-> http://localhost:3000/libraryapp-api/book_genres [POST]
-> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
+> http://localhost:3000/libraryapp-api/book_genres [GET]<br>
+> http://localhost:3000/libraryapp-api/book_genres [POST]<br>
+> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]<br>
 > http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
 
 ### 1. GET Book Genres
