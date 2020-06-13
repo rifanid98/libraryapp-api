@@ -25,6 +25,9 @@ const jwt = require('jsonwebtoken');
 // import
 const config = require('../configs/global');
 
+// untuk menampung token
+const tokenList = {}
+
 module.exports = {
   register: async function (req, res) {
     try {
@@ -43,6 +46,7 @@ module.exports = {
       return myResponse.response( res, "failed", "Register Gagal", 500, "Internal Server Error");
     }
   },
+
   login: async function (req, res) {
     try {
       const data = req.body;
@@ -56,8 +60,10 @@ module.exports = {
         const tokenData = {
           ...result[0]
         }
-        const token = jwt.sign(tokenData, config.jwtSecretKey, {expiresIn: "10m"});
-        result[0].token = token;
+        const token = jwt.sign(tokenData, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+        const tokenRefresh = jwt.sign(tokenData, config.jwtSecretKey, {expiresIn: config.jwtTokenRefreshLifeTime});
+        result[0].tokenLogin = token;
+        result[0].tokenRefresh = tokenRefresh;
 
         return myResponse.response(res, "success", result, 200, "Ok!");
       } else {
@@ -68,4 +74,30 @@ module.exports = {
       return myResponse.response( res, "failed", "Username or Password is wrong!", 500, "Internal Server Error");
     }
   },
+
+  refreshtoken: async function (req, res) {
+      try {
+		  const data = req.body;
+		  const error = await validate.validate_refresh_token(data);
+
+		  const token_refresh = data.token_refresh;
+		  const decoded = jwt.verify(token_refresh, config.jwtSecretKey);  
+		  let newData = {};
+		  for (key in decoded) {
+			  if (key != 'iat' && key != 'exp') {
+				  newData[key] = decoded[key];
+			  }
+		  }
+		  const token_login = jwt.sign(newData, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
+		  return myResponse.response(res, "success", { token_login: token_login}, 200, "Ok!");
+      } catch (error) {
+        if ("joiError" in error) {
+          // delete new image when validation error
+          return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+        }
+        console.log(error);
+        return myResponse.response(res, "failed", error, 500, "Internal Server Error");
+      }
+  }
+
 };
