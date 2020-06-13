@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { required } = require('joi');
 const config = require('../configs/global');
 const myResponse = require('../helpers/myResponse');
-const { response } = require('../helpers/myResponse');
 
 module.exports = {
     verifyJwtToken: function(req, res, next) {
@@ -13,7 +11,11 @@ module.exports = {
             next();
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-                return myResponse.response(res, "failed", error.message, 401, "Invalid Token!")
+                const message = {
+                    error: error.message,
+                    message: 'Please refresh token'
+                }
+                return myResponse.response(res, "failed", message, 401, "Invalid Token!")
             }
         }
     }
