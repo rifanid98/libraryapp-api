@@ -10,12 +10,26 @@ module.exports = {
             req.decodedToken = decoded;
             next();
         } catch (error) {
-            if (error.name === 'TokenExpiredError') {
-                const message = {
-                    error: error.message,
-                    message: 'Please refresh token'
-                }
-                return myResponse.response(res, "failed", message, 401, "Invalid Token!")
+            switch (error.name) {
+                case 'TokenExpiredError':
+                    var message = {
+                        error: error.message,
+                        message: 'Please refresh token'
+                    }
+                    return myResponse.response(res, "failed", "", 500, message);
+                    break;
+                case 'JsonWebTokenError':
+                    var message = {
+                        error: error.message,
+                        message: 'Please login'
+                    }
+                    return myResponse.response(res, "failed", "", 500, message);
+                    break;
+            
+                default:
+                    console.log(error);
+                    return myResponse.response(res, "failed", "", 500, "Internal Server Error!")
+                    break;
             }
         }
     }
