@@ -6,6 +6,8 @@ const config = {
     database: process.env.MYSQL_DATABASE,
   },
   jwtSecretKey: process.env.JWT_KEY,
+  jwtTokenLoginLifeTime: '10m',
+  jwtTokenRefreshLifeTime: '7d',
   rootProjectPath: 'libraryapp-api',
   imageStaticPath: function(req) {
     return `${req.protocol}://${req.get("host")}/${this.rootProjectPath}/images/`;
