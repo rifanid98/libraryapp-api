@@ -187,6 +187,7 @@ Hasil ketika sukses:
     }
 }
 ```
+
 ### 4. DELETE Books
 > http://localhost:3000/libraryapp-api/books/:id [DELETE]
 
@@ -205,6 +206,118 @@ Hasil ketika sukses:
     "message": "Deleted!",
     "data": {
         "book_id": "20"
+    }
+}
+```
+
+## III. Books
+Mengakses genre buku
+
+**URL API**
+> http://localhost:3000/libraryapp-api/book_genres [GET]
+> http://localhost:3000/libraryapp-api/book_genres [POST]
+> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
+> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
+
+### 1. GET Book Genre
+> http://localhost:3000/libraryapp-api/book_genres [GET]
+
+Note: 
+Mendapatkan seluruh genre
+
+### Result
+Hasil ketika sukses:
+```
+{
+    "statusExecution": "success",
+    "statusCode": 200,
+    "message": "Ok!",
+    "data": [
+        {
+            "book_genre_id": 3,
+            "book_genre_name": "romance"
+        }  
+    ]
+}
+```
+
+### 2. POST Book Genre
+> http://localhost:3000/libraryapp-api/book_genres [POST]
+
+Note: 
+Menambahkan seluruh genre
+
+### Parameter
+
+| Name             | Type     | Required | 
+| ---------------- | -------- | -------- | 
+| book_genre_name  | string   | true     |
+
+### Result
+Hasil ketika sukses:
+```
+{
+    "statusExecution": "success",
+    "statusCode": 200,
+    "message": "Ok!",
+    "data": [
+        {
+            "book_genre_id": 3,
+            "book_genre_name": "romance"
+        }  
+    ]
+}
+```
+
+### 3. PATCH Book Genre
+> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
+
+Note: 
+- Mengupdate buku
+- :id merupakan ID Buku
+
+Contoh : http://localhost:3000/libraryapp-api/book_genres/3
+
+### Parameter
+
+| Name             | Type     | Required | 
+| ---------------- | -------- | -------- | 
+| book_genre_name  | string   | true     |
+
+### Body
+Mendukung application/json, urlencoded dan form-data format
+
+### Result
+Hasil ketika sukses:
+```
+{
+    "statusExecution": "success",
+    "statusCode": 200,
+    "message": "Ok!",
+    "data": {
+        "book_genre_name": "romantis"
+    }
+}
+```
+
+### 4. DELETE Book Genre
+> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
+
+Note: 
+- Menghapus buku
+- :id merupakan ID Buku
+
+Contoh : http://localhost:3000/libraryapp-api/book_genres/3
+
+### Result
+Hasil ketika sukses:
+```
+{
+    "statusExecution": "success",
+    "statusCode": 200,
+    "message": "Deleted!",
+    "data": {
+        "book_genre_id": "3"
     }
 }
 ```
