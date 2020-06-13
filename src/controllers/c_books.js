@@ -144,9 +144,10 @@ async function post_book(req,res) {
             return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
         }
     } catch (error) {
-        if ('joiError' in error) {
+        if ("joiError" in error) {
             // delete new image when validation error
             delete_image(req.file.filename);
+            return myResponse.response(res, "failed", error, 500, "Internal Server Error")
         }
         console.log(error);
         return myResponse.response(res, "failed", error, 500, "Internal Server Error")
@@ -190,9 +191,10 @@ async function patch_book(req,res) {
         if ("joiError" in error) {
             // delete new image when validation error
           delete_image(req.file.filename);
+          return myResponse.response(res, "failed", error, 500, "Internal Server Error")
         }
         console.log(error);
-        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
+        return myResponse.response(res, "failed", error, 500, "Internal Server Error")
     }
 }
 
