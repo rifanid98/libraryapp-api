@@ -92,10 +92,24 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const error = Joi.validate(user_data, joiSchema);
 
-           if (error.error != null) {
-             reject(myError(error));
-           }
-           resolve();
+            if (error.error != null) {
+                reject(myError(error));
+            }
+            resolve();
+        });
+    },
+    validate_refresh_token: function (user_data) {
+        const joiSchema = {
+            token_refresh: Joi.string().trim().min(3).required()
+        };
+
+        return new Promise((resolve, reject) => {
+            const error = Joi.validate(user_data, joiSchema);
+
+            if (error.error != null) {
+                reject(myError(error));
+            }
+            resolve();
         });
     }
 }
