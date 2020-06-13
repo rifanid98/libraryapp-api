@@ -210,7 +210,7 @@ Hasil ketika sukses:
 }
 ```
 
-## III. Books
+## III. Book Genres
 Mengakses genre buku
 
 **URL API**
@@ -219,7 +219,7 @@ Mengakses genre buku
 > http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
 > http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
 
-### 1. GET Book Genre
+### 1. GET Book Genres
 > http://localhost:3000/libraryapp-api/book_genres [GET]
 
 Note: 
