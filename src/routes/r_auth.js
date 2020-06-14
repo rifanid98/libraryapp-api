@@ -18,6 +18,6 @@ const auth_controller = require('../controllers/c_auth');
 // register user
 router.post('/register', upload.none(), auth_controller.register);
 router.post('/login', upload.none(), auth_controller.login);
-router.post('/refreshtoken', upload.none(), auth_controller.refreshtoken);
+router.post('/refreshtoken', upload.none(), auth_controller.refresh_token);
 
 module.exports = router;

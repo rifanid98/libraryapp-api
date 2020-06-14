@@ -74,18 +74,18 @@ module.exports = {
                 delete result[0].user_password;
 
                 // jsonwebtoken
-                const tokenLoginData = {
+                const token_loginData = {
                     ...result[0],
                     tokenType: 'login'
                 };
-                const token = jwt.sign(tokenLoginData, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
-                const tokenRefreshData = {
+                const token = jwt.sign(token_loginData, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
+                const token_refreshData = {
                     ...result[0],
                     tokenType: 'refresh'
                 };
-                const tokenRefresh = jwt.sign(tokenRefreshData, config.jwt_secret_key, {expiresIn: config.jwt_token_refresh_life_time});
-                result[0].tokenLogin = token;
-                result[0].tokenRefresh = tokenRefresh;
+                const token_refresh = jwt.sign(token_refreshData, config.jwt_secret_key, {expiresIn: config.jwt_token_refresh_life_time});
+                result[0].token_login = token;
+                result[0].token_refresh = token_refresh;
 
                 return my_response.response(res, "success", result, 200, "Ok!");
             } else {
@@ -109,7 +109,7 @@ module.exports = {
         }
     },
 
-    refreshtoken: async function (req, res) {
+    refresh_token: async function (req, res) {
         try {
             const data = req.body;
             const error = await validate.validate_refresh_token(data);
