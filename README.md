@@ -10,7 +10,7 @@ Untuk mengakses api yang disediakan, harus memiliki akses dengan login terlebih 
 ### 1. Login API
 > http://localhost:3000/auth/login [POST]
 
-### Parameter
+### Field
 
 | Name          | Type          | Required |
 | ------------- | ------------- | -------- |
@@ -45,7 +45,7 @@ Hasil ketika sukses:
 > http://localhost:3000/auth/register
 
 
-### Parameter
+### Field
 
 | Name          | Type          | Required | 
 | ------------- | ------------- | -------- | 
@@ -82,32 +82,50 @@ Mengakses buku, detail buku dan pencarian
 ### 1. GET Books
 > http://localhost:3000/libraryapp-api/books [GET]
 
-Note: 
-Mendapatkan seluruh buku
 
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Ok!",
-    "data": [
-        {
-            "book_id": 20,
-            "book_title": "superman superman",
-            "book_description": "the new superhero",
-            "book_image": "2020-06-12T15:30:00.393ZIslamic_University_of_Madinah_Logo.png",
-            "book_author": "Rifandi",
-            "book_status": "0",
-            "book_genre_id": 3,
-            "book_added": "2020-06-11T06:53:20.000Z",
-            "book_updated": "2020-06-12T15:30:00.000Z",
-            "book_genre_name": "romance"
-        }       
-    ]
-}
-```
+### Parameter
+> - Search
+
+| Name       | Type                 | Required | 
+| ---------- | -------------------- | -------- | 
+| desctipion | string               | optional | 
+| title      | string               | optional |
+| genre      | number [Foreign Key] | optional |
+| author     | string               | optional |
+| status     | number [0/1]         | optional |
+
+Note: 
+- Genre  : Id of genres
+- Status : [0/1] [Not Booked/Booked]
+
+Search Example:
+- http://localhost:3000/libraryapp-api/books?description=some description&author=John Doe&title=The Love&genre=romance&status=1
+
+> - Sort
+
+| Name   | Type            | Required | 
+| ------ | --------------- | -------- | 
+| sort   | string [field]  | optional |
+
+Note:
+- Sort : [field] sort by [description/title/genre/author/status] 
+
+Sort Example:
+- http://localhost:3000/libraryapp-api/books?sort=author
+
+> - Pagination
+
+| Name   | Type   | Required                       | 
+| ------ | ------ | ------------------------------ | 
+| page   | string | optional                       |
+| limit  | string | required if use the page param |
+
+Note:
+- Page  : The number of page you want to request
+- Limit : Total data per page (required if page param is used)
+
+Pagination Example:
+- http://ocalhost:3000/libraryapp-api/books?page=1&limit=4
 
 ### 2. POST Books
 > http://localhost:3000/libraryapp-api/books [POST]
@@ -115,7 +133,7 @@ Hasil ketika sukses:
 Note: 
 Menambahkan buku
 
-### Parameter
+### Field
 
 | Name             | Type                | Required | 
 | ---------------- | ------------------- | -------- | 
@@ -128,24 +146,6 @@ Menambahkan buku
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 201,
-    "message": "Created!",
-    "data": {
-        "book_title": "The Power Vim",
-        "book_description": "Kekuatan Rahasia dari teks editor VIM",
-        "book_author": "anonymous",
-        "book_status": "0",
-        "book_genre_id": "3",
-        "book_image": "http://localhost:3000/libraryapp-api/images/2020-06-13T14:09:47.126Zvim.png"
-    }
-}
-```
 
 ### 3. PATCH Books
 > http://localhost:3000/libraryapp-api/books/:id [PATCH]
@@ -156,7 +156,7 @@ Note:
 
 Contoh : http://localhost:3000/libraryapp-api/books/20
 
-### Parameter
+### Field
 
 | Name             | Type                | Required | 
 | ---------------- | ------------------- | -------- | 
@@ -170,24 +170,6 @@ Contoh : http://localhost:3000/libraryapp-api/books/20
 ### Body
 Mendukung application/json, urlencoded dan form-data format
 
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Updated!",
-    "data": {
-        "book_title": "The Power Vim",
-        "book_description": "Kekuatan Rahasia dari teks editor VIM WOW",
-        "book_author": "anonymous",
-        "book_status": "0",
-        "book_genre_id": "3",
-        "book_image": "http://localhost:3000/libraryapp-api/images/2020-06-13T14:09:47.126Zvim.png"
-    }
-}
-```
-
 ### 4. DELETE Books
 > http://localhost:3000/libraryapp-api/books/:id [DELETE]
 
@@ -196,19 +178,6 @@ Note:
 - :id merupakan ID Buku
 
 Contoh : http://localhost:3000/libraryapp-api/books/20
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Deleted!",
-    "data": {
-        "book_id": "20"
-    }
-}
-```
 
 ## III. Book Genres
 Mengakses genre buku
@@ -225,49 +194,17 @@ Mengakses genre buku
 Note: 
 Mendapatkan seluruh genre
 
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Ok!",
-    "data": [
-        {
-            "book_genre_id": 3,
-            "book_genre_name": "romance"
-        }  
-    ]
-}
-```
-
 ### 2. POST Book Genre
 > http://localhost:3000/libraryapp-api/book_genres [POST]
 
 Note: 
 Menambahkan seluruh genre
 
-### Parameter
+### Field
 
 | Name             | Type     | Required | 
 | ---------------- | -------- | -------- | 
 | book_genre_name  | string   | true     |
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Ok!",
-    "data": [
-        {
-            "book_genre_id": 3,
-            "book_genre_name": "romance"
-        }  
-    ]
-}
-```
 
 ### 3. PATCH Book Genre
 > http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
@@ -278,7 +215,7 @@ Note:
 
 Contoh : http://localhost:3000/libraryapp-api/book_genres/3
 
-### Parameter
+### Field
 
 | Name             | Type     | Required | 
 | ---------------- | -------- | -------- | 
@@ -286,19 +223,6 @@ Contoh : http://localhost:3000/libraryapp-api/book_genres/3
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Ok!",
-    "data": {
-        "book_genre_name": "romantis"
-    }
-}
-```
 
 ### 4. DELETE Book Genre
 > http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
@@ -308,16 +232,3 @@ Note:
 - :id merupakan ID Buku
 
 Contoh : http://localhost:3000/libraryapp-api/book_genres/3
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Deleted!",
-    "data": {
-        "book_genre_id": "3"
-    }
-}
-```
