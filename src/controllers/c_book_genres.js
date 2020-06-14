@@ -41,11 +41,11 @@ async function post_book_genre(req, res) {
         let result = await book_genres_model.get_data_by_name(data);
         console.log(data);
         
-        if (result.length > 0) {
-            return myResponse.response(res, "failed", data, 409, "already exists!")
-        } else {
+        if (result.length < 1) {
             result = await book_genres_model.add_data(data);
             return myResponse.response(res, "success", data, 201, "Created!")
+        } else {
+            return myResponse.response(res, "failed", data, 409, "already exists!")
         }
     } catch (error) {
         console.log(error);
