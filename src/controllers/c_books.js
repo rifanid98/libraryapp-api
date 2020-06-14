@@ -50,14 +50,13 @@ function generate_filters(filters = {}, fields = {}) {
     }
 
     // get pagination filters
-    for (filter in filters) {
-        if (filters.page || filters.limit) {
-            pagination[filter] = filters[filter].escape();
-        }
+    if ((filters.page && filters.page > 0) && (filters.limit && filters.limit > 0)) {
+        pagination['page'] = filters.page;
+        pagination['limit'] = filters.limit;
     }
     
     // get sort filters
-    if(filters.sort) {
+    if(filters.sort && filters.sort.length > 0) {
         sort.sort = (filters.sort).escape();
     }
     
@@ -109,6 +108,7 @@ async function get_books(req,res) {
         };
 
         const result = await books_model.get_data_custom(new_filters, total_data.length);
+        
         return my_response.response(res, "success", result, 200, "Ok!");
     } catch (error) {
         console.log(error);
@@ -167,7 +167,11 @@ async function patch_book(req,res) {
 
             const id = req.params.id;
             const old_data = await get_book_by_id(id);
-
+            if (old_data.length < 1) {
+                const message = `Data with id ${id} not found`;
+                return my_response.response(res, "failed", "", 404, message);
+            }
+            
             const body = req.body;
             const data = {
             ...body,
@@ -212,15 +216,18 @@ async function delete_book(req,res) {
     try {
         const id = req.params.id;
         const old_data = await get_book_by_id(id);
+        if(old_data.length < 1) {
+            const message = `Data with id ${id} not found`;
+            return my_response.response(res, "failed", "", 404, message);
+        }
         const result = await books_model.delete_data(id);
-        
-        const data = {book_id: id}
         if (result.affectedRows > 0){
+            const data = {book_id: id}
             const my_request = { protocol: req.protocol, host: req.get('host') }
             delete_image.delete(my_request, old_data[0].book_image);
             return my_response.response(res, "success", data, 200, "Deleted!");
         } else {
-            const message = `Delete data ${data.book_title} failed `;
+            const message = `Internal Server Error`;
             return my_response.response(res, "failed", "", 500, message);
         }
     } catch (error) {
