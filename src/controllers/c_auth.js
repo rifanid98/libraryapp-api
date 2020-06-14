@@ -9,12 +9,12 @@ const auth_model = require("../models/m_auth");
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, statusExecution, data, statusCode, message)
+ * response: function(res, status_execution, data, status_code, message)
  */
-const myResponse = require("../helpers/myResponse");
+const my_response = require("../helpers/my_response");
 
 // import joi
-const validate = require("../helpers/joiSchema");
+const validate = require("../helpers/joi_schema");
 
 // import bcrypt
 const bcrypt = require("bcrypt");
@@ -42,17 +42,17 @@ module.exports = {
 
                 const result = await auth_model.register(data);
                 delete data.user_password;
-                return myResponse.response(res, "success", data, 201, "Created!");
+                return my_response.response(res, "success", data, 201, "Created!");
             } else {
                 const message = {
                     error: 'duplicate data',
                     message: `${data.user_name} is exists`
                 }
-                return myResponse.response(res, "failed", "", 409, message);
+                return my_response.response(res, "failed", "", 409, message);
             }
         } catch (error) {
             console.log(error);
-            return myResponse.response(
+            return my_response.response(
                 res,
                 "failed",
                 "Register Gagal",
@@ -78,18 +78,18 @@ module.exports = {
                     ...result[0],
                     tokenType: 'login'
                 };
-                const token = jwt.sign(tokenLoginData, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                const token = jwt.sign(tokenLoginData, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
                 const tokenRefreshData = {
                     ...result[0],
                     tokenType: 'refresh'
                 };
-                const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, {expiresIn: config.jwtTokenRefreshLifeTime});
+                const tokenRefresh = jwt.sign(tokenRefreshData, config.jwt_secret_key, {expiresIn: config.jwt_token_refresh_life_time});
                 result[0].tokenLogin = token;
                 result[0].tokenRefresh = tokenRefresh;
 
-                return myResponse.response(res, "success", result, 200, "Ok!");
+                return my_response.response(res, "success", result, 200, "Ok!");
             } else {
-                return myResponse.response(
+                return my_response.response(
                     res,
                     "failed",
                     "Username or Password is wrong!",
@@ -99,7 +99,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return myResponse.response(
+            return my_response.response(
                 res,
                 "failed",
                 "Username or Password is wrong!",
@@ -115,26 +115,26 @@ module.exports = {
             const error = await validate.validate_refresh_token(data);
 
             const token_refresh = data.token_refresh;
-            const decoded = jwt.verify(token_refresh, config.jwtSecretKey);
+            const decoded = jwt.verify(token_refresh, config.jwt_secret_key);
             if (decoded.tokenType == 'refresh') {
                 delete decoded.iat;
                 delete decoded.exp;
-                const token_login = jwt.sign(decoded, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
-                return myResponse.response(res, "success", { token_login: token_login }, 200, "Ok!");
+                const token_login = jwt.sign(decoded, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
+                return my_response.response(res, "success", { token_login: token_login }, 200, "Ok!");
             } else {
                 const message = {
                     error: 'Wrong token',
                     message: 'Please use refresh token'
                 }
-                return myResponse.response(res, "failed", error, 500, message);
+                return my_response.response(res, "failed", error, 500, message);
             }
         } catch (error) {
             if ("joiError" in error) {
                 // delete new image when validation error
-                return myResponse.response(res, "failed", error, 500, "Internal Server Error");
+                return my_response.response(res, "failed", error, 500, "Internal Server Error");
             }
             console.log(error);
-            return myResponse.response(res, "failed", error, 500, "Internal Server Error");
+            return my_response.response(res, "failed", error, 500, "Internal Server Error");
         }
     },
 };

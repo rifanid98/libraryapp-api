@@ -20,9 +20,9 @@ const users_router = require('./r_users');
 /**
  * Fire the router
  */
-router.use('/books', auth_middleware.verifyJwtToken, books_router);
-router.use('/book_genres', auth_middleware.verifyJwtToken, book_genres_router);
+router.use('/books', auth_middleware.verify_jwt_token, books_router);
+router.use('/book_genres', auth_middleware.verify_jwt_token, book_genres_router);
 router.use('/auth', auth_router);
-router.use("/users", auth_middleware.verifyJwtToken, users_router);
+router.use("/users", auth_middleware.verify_jwt_token, users_router);
 
 module.exports = router;

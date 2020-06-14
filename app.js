@@ -15,8 +15,8 @@ const app = express();
  */
 // import cors
 const cors = require('cors');
-// import bodyParser
-const bodyParser = require('body-parser');
+// import body_parser
+const body_parser = require('body-parser');
 // import morgan
 const morgan = require('morgan');
 // import dotenv
@@ -52,8 +52,8 @@ app.use(morgan('dev'));
  * .
  * Menerima request
  */
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(body_parser.urlencoded({extended: true}));
+app.use(body_parser.json());
 
 /**============================ Routes ============================ */
 
@@ -63,7 +63,7 @@ app.use(bodyParser.json());
  * Menerima data form
  */
 // for parsing multipart/form-data
-app.use(`/${config.rootProjectPath}`, express.static("src/assets/"));
+app.use(`/${config.root_project_path}`, express.static("src/assets/"));
 // app.use("/libraryapp-api", express.static("src/assets/"));
 
 /**
@@ -74,7 +74,7 @@ app.use(`/${config.rootProjectPath}`, express.static("src/assets/"));
 // Load routes
 const routes = require('./src/routes/r_index');
 // set the routes
-app.use(`/${config.rootProjectPath}`, routes);
+app.use(`/${config.root_project_path}`, routes);
 // app.use('/libraryapp-api', routes);
 
 /**============================= URLs ============================= */

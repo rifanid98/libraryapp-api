@@ -8,7 +8,7 @@ const conn = require('../helpers/mysql');
 /**
  * Custom Function
  */
-function generate_like(filters) {
+function generate_like(filters = {}) {
     let result = "";
     const length = Object.keys(filters).length - 1;
     let i = 0;

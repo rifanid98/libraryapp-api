@@ -10,9 +10,9 @@ const dbviews_model = require("../models/m_dbviews");
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, statusExecution, data, statusCode, message)
+ * response: function(res, status_execution, data, status_code, message)
  */
-const myResponse = require("../helpers/myResponse");
+const my_response = require("../helpers/my_response");
 
 // import fs
 const fs = require('fs')
@@ -20,7 +20,7 @@ const path = 'src/assets/images/';
 const image_path = global.appRoot + "/" + path;
 
 // import joi
-const validate = require('../helpers/joiSchema');
+const validate = require('../helpers/joi_schema');
 
 // import config
 const config = require('../configs/global');
@@ -28,7 +28,7 @@ const config = require('../configs/global');
 /**
  * Custom Function
  */
-function delete_image(file_name) {
+function delete_image(file_name = "") {
     if (fs.existsSync(image_path + file_name)) {
       try {
         fs.unlinkSync(image_path + file_name);
@@ -38,7 +38,7 @@ function delete_image(file_name) {
     }
 }
 
-function generate_filters(filters, fields) {
+function generate_filters(filters = {}, fields = {}) {
     let search = {};
     let pagination = {};
     let sort = {};
@@ -74,7 +74,7 @@ function generate_filters(filters, fields) {
     };
 }
 
-async function get_book_by_id(id) {
+async function get_book_by_id(id = 0) {
     try {
         const result = await books_model.get_data_by_id(id);
         return result;
@@ -103,6 +103,7 @@ String.prototype.escape = function () {
 async function get_books(req,res) {
     try {
         const filters = req.query;
+        
         const fields = await dbviews_model.get_book_and_genre_field_name();
         const total_data = await books_model.get_all_data();
         const generated_filters = generate_filters(filters, fields);
@@ -115,10 +116,10 @@ async function get_books(req,res) {
 
         const result = await books_model.get_data_custom(new_filters, total_data.length);
         // res.send(result);
-        return myResponse.response(res, "success", result, 200, "Ok!");
+        return my_response.response(res, "success", result, 200, "Ok!");
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
+        return my_response.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 
@@ -126,11 +127,11 @@ async function post_book(req,res) {
     try {
         if (req.file) {
             const body = req.body;
-            const fieldToPatch = Object.keys(req.body);
-            await validate.validate_books(req.body, fieldToPatch);
+            const field_to_patch = Object.keys(req.body);
+            await validate.validate_books(req.body, field_to_patch);
             const data = {
               ...body,
-              book_image: `${config.imageStaticPath(req)}${req.file.filename}`
+              book_image: `${config.image_static_path(req)}${req.file.filename}`
             };
             const check_book = await books_model.get_data_by_name(data.book_title);
             console.log(check_book.length);
@@ -138,42 +139,43 @@ async function post_book(req,res) {
             if (check_book.length < 1) {
                 const result = await books_model.add_data(data);
                 if (result.affectedRows > 0) {
-                    return myResponse.response(res, "success", data, 201, "Created!");
+                    return my_response.response(res, "success", data, 201, "Created!");
                 } else {
                     // delete new image when insert data is failed
                     delete_image(req.file.filename);
-                    return myResponse.response( res, "failed", data, 404, "Not Found!");
+                    return my_response.response( res, "failed", data, 404, "Not Found!");
                 }
             } else {
                 const message = {
                     error: 'duplicate data',
                     message: `${data.book_title} is exists`
                 }
-                return myResponse.response(res, "failed", "", 409, message);
+                return my_response.response(res, "failed", "", 409, message);
             }
         } else {
-            return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
+            return my_response.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
         }
     } catch (error) {
+        console.log(error);
         if ("joiError" in error) {
             // delete new image when validation error
             delete_image(req.file.filename);
-            return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+            return my_response.response(res, "failed", error, 500, "Internal Server Error")
         }
         if ('sqlMessage' in error) {
-            console.log(error);
-            return myResponse.response(res, "failed", "", 500, "Internal Server Error")
+            delete_image(req.file.filename);
+            return my_response.response(res, "failed", "", 500, "Internal Server Error")
         }
         console.log(error);
-        return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+        return my_response.response(res, "failed", error, 500, "Internal Server Error")
     }
 }
 
 async function patch_book(req,res) {
     try {
         if (req.file) {
-            const fieldToPatch = Object.keys(req.body);
-            const error = await validate.validate_books(req.body, fieldToPatch);
+            const field_to_patch = Object.keys(req.body);
+            const error = await validate.validate_books(req.body, field_to_patch);
 
             const id = req.params.id;
             const old_data = await get_book_by_id(id);
@@ -193,23 +195,27 @@ async function patch_book(req,res) {
             if (result.affectedRows > 0) {
                 // delete old image
                 delete_image(old_data[0].book_image);
-                return myResponse.response(res, "success", newData, 200, "Updated!");
+                return my_response.response(res, "success", newData, 200, "Updated!");
             } else {
                 // delete new image when update data is failed
                 delete_image(req.file.filename);
-                return myResponse.response(res, "failed", newData, 404, "Not Found!");
+                return my_response.response(res, "failed", newData, 404, "Not Found!");
             }
         } else {
-            return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
+            return my_response.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
         }
     } catch (error) {
+        console.log(error);
         if ("joiError" in error) {
             // delete new image when validation error
-          delete_image(req.file.filename);
-          return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+            delete_image(req.file.filename);
+            return my_response.response(res, "failed", error, 500, "Internal Server Error")
         }
-        console.log(error);
-        return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+        if ('sqlMessage' in error) {
+            delete_image(req.file.filename);
+            return my_response.response(res, "failed", "", 500, "Internal Server Error")
+        }
+        return my_response.response(res, "failed", error, 500, "Internal Server Error")
     }
 }
 
@@ -219,13 +225,13 @@ async function delete_book(req,res) {
         const result = await books_model.delete_data(id);
         const data = {book_id: id}
         if (result.affectedRows > 0){
-            return myResponse.response(res, "success", data, 200, "Deleted!");
+            return my_response.response(res, "success", data, 200, "Deleted!");
         } else {
-            return myResponse.response(res, "failed", data, 404, "Not Found!");
+            return my_response.response(res, "failed", data, 404, "Not Found!");
         }
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", "", 500, "Internal Server Error")
+        return my_response.response(res, "failed", "", 500, "Internal Server Error")
     }
 }
 

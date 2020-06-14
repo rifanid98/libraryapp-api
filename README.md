@@ -24,8 +24,8 @@ Mendukung application/json, urlencoded dan form-data format
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Ok!",
     "data": [
         {
@@ -60,8 +60,8 @@ Mendukung application/json, urlencoded dan form-data format
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 201,
+    "status_execution": "success",
+    "status_code": 201,
     "message": "Created!",
     "data": {
         "user_name": "name",
@@ -89,8 +89,8 @@ Mendapatkan seluruh buku
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Ok!",
     "data": [
         {
@@ -133,8 +133,8 @@ Mendukung application/json, urlencoded dan form-data format
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 201,
+    "status_execution": "success",
+    "status_code": 201,
     "message": "Created!",
     "data": {
         "book_title": "The Power Vim",
@@ -174,8 +174,8 @@ Mendukung application/json, urlencoded dan form-data format
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Updated!",
     "data": {
         "book_title": "The Power Vim",
@@ -201,8 +201,8 @@ Contoh : http://localhost:3000/libraryapp-api/books/20
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Deleted!",
     "data": {
         "book_id": "20"
@@ -229,8 +229,8 @@ Mendapatkan seluruh genre
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Ok!",
     "data": [
         {
@@ -257,8 +257,8 @@ Menambahkan seluruh genre
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Ok!",
     "data": [
         {
@@ -291,8 +291,8 @@ Mendukung application/json, urlencoded dan form-data format
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Ok!",
     "data": {
         "book_genre_name": "romantis"
@@ -313,8 +313,8 @@ Contoh : http://localhost:3000/libraryapp-api/book_genres/3
 Hasil ketika sukses:
 ```
 {
-    "statusExecution": "success",
-    "statusCode": 200,
+    "status_execution": "success",
+    "status_code": 200,
     "message": "Deleted!",
     "data": {
         "book_genre_id": "3"

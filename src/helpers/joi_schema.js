@@ -6,7 +6,7 @@ const Joi = require('joi');
 /**
  * Custom Joi Error Handling
  */
-function myError(error) {
+function my_joi_error(error = {}) {
     const joiError = error.error.details[0];
     const errorMessage = {
         joiError: 'joi',
@@ -18,7 +18,7 @@ function myError(error) {
 
 module.exports = {
     validate_books: function(book, field = null) {
-        const joiSchema = {
+        const joi_schema = {
             book_title: Joi.string().trim().min(3).required(),
             book_description: Joi.string().trim().min(3).required(),
             // book_image: Joi.required(),
@@ -29,85 +29,85 @@ module.exports = {
 
         if (!field) {
             return new Promise((resolve, reject) => {
-                const error = Joi.validate(book, joiSchema);
+                const error = Joi.validate(book, joi_schema);
 
                 if (error.error != null) {
-                  reject(myError(error));
+                  reject(my_joi_error(error));
                 }
                 resolve();
             });
         } else {
-            const dynamicSchema = Object.keys(joiSchema)
+            const dynamicSchema = Object.keys(joi_schema)
                 .filter(key => field.includes(key))
                 .reduce((obj, key) => {
-                    obj[key] = joiSchema[key];
+                    obj[key] = joi_schema[key];
                     return obj;
                 }, {});
             return new Promise((resolve, reject) => {
-                const error = Joi.validate(book, joiSchema);
+                const error = Joi.validate(book, joi_schema);
 
                 if (error.error != null) {
-                  reject(myError(error));
+                  reject(my_joi_error(error));
                 }
                 resolve();
             });
         }
     },
     validate_book_genres: function (book_genres) {
-        const joiSchema = {
+        const joi_schema = {
             book_genre_name: Joi.string().trim().min(3).required()
         };
 
         return new Promise((resolve, reject) => {
-            const error = Joi.validate(book_genres, joiSchema);
+            const error = Joi.validate(book_genres, joi_schema);
 
             if (error.error != null) {
-                reject(myError(error));
+                reject(my_joi_error(error));
             }
             resolve();
         });
     },
     validate_register: function (user_data) {
-        const joiSchema = {
+        const joi_schema = {
             user_name: Joi.string().trim().min(3).required(),
             user_password: Joi.string().trim().min(3).required(),
             user_role: Joi.number().min(1).required()
         };
 
         return new Promise((resolve, reject) => {
-            const error = Joi.validate(user_data, joiSchema);
+            const error = Joi.validate(user_data, joi_schema);
 
            if (error.error != null) {
-             reject(myError(error));
+             reject(my_joi_error(error));
            }
            resolve();
         });
     },
     validate_login: function (user_data) {
-        const joiSchema = {
+        const joi_schema = {
             user_name: Joi.string().trim().min(3).required(),
             user_password: Joi.string().trim().min(3).required()
         };
 
         return new Promise((resolve, reject) => {
-            const error = Joi.validate(user_data, joiSchema);
+            const error = Joi.validate(user_data, joi_schema);
 
             if (error.error != null) {
-                reject(myError(error));
+                reject(my_joi_error(error));
             }
             resolve();
         });
     },
     validate_refresh_token: function (user_data) {
-        const joiSchema = {
+        const joi_schema = {
             token_refresh: Joi.string().trim().min(3).required()
         };
 
         return new Promise((resolve, reject) => {
-            const error = Joi.validate(user_data, joiSchema);
+            const error = Joi.validate(user_data, joi_schema);
 
             if (error.error != null) {
-                reject(myError(error));
+                reject(my_joi_error(error));
             }
             resolve();
         });

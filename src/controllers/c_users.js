@@ -9,12 +9,12 @@ const users_model = require("../models/m_users");
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, statusExecution, data, statusCode, message)
+ * response: function(res, status_execution, data, status_code, message)
  */
-const myResponse = require("../helpers/myResponse");
+const my_response = require("../helpers/my_response");
 
 // import joi
-const validate = require('../helpers/joiSchema');
+const validate = require('../helpers/joi_schema');
 
 
 /**
@@ -26,10 +26,10 @@ async function get_users(req, res) {
         for (key in result) {
             delete result[key].user_password;
         }
-        return myResponse.response(res, "success", result, 200, "Ok!")
+        return my_response.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
-        return myResponse.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, "Internal Server Error");
     }
 }
 
