@@ -9,6 +9,9 @@ const router = express.Router();
 // import multer upload helper
 const upload = require('../helpers/upload');
 
+// import middleware
+const auth_middleware = require('../middleware/mdl_auth');
+
 /**
  * Controllers
  */

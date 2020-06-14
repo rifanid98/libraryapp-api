@@ -56,26 +56,35 @@ module.exports = {
             }
 
             // pagination
-            if (Object.keys(filters.pagination).length > 0) {
-                let data_per_page = 5; 
-                let active_page = 1
+            var data_per_page = 5; 
+            var active_page = 1
+            var total_page = 0;
+
+            if (Object.keys(filters.pagination).length == 2) {
                 
-                if ("limit" in filters.pagination) {
-                    data_per_page = filters.pagination.limit;
+                if (filters.pagination.limit) {
+                    var data_per_page = filters.pagination.limit;
                 }
-                if ("page" in filters.pagination) {
-                    active_page = filters.pagination.page;
+                if (filters.pagination.page) {
+                    var active_page = filters.pagination.page;
                 }
                 
                 let first_data = (data_per_page * active_page) - data_per_page;
                 sqlQuery += ("page" in filters.pagination) ? " LIMIT " + first_data + ", " + data_per_page + " " : "";
+                
+                var total_page = Math.ceil(total_data / data_per_page);
             }
             
             conn.query(sqlQuery, filters.search, function (error, result) {
                 if (error) {
                     reject(error);
                 }
-                resolve(result);
+                const new_result = {
+                    total_page,
+                    result
+                }
+
+                return Object.keys(filters.pagination).length > 0 ? resolve(new_result) : resolve(result);
             })
         })
     },

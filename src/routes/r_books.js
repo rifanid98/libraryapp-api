@@ -9,6 +9,9 @@ const router = express.Router();
 // import multer upload helper
 const upload = require('../helpers/upload');
 
+// import middleware
+const auth_middleware = require('../middleware/mdl_auth');
+
 /**
  * Controllers
  */
@@ -16,12 +19,12 @@ const upload = require('../helpers/upload');
 const books_controller = require('../controllers/c_books');
 
 // Get All Books
-router.get('/', books_controller.get_books);
+router.get('/', auth_middleware.level_user, books_controller.get_books);
 // Post a Book
-router.post('/', upload.single('book_image'), books_controller.post_book);
+router.post('/', auth_middleware.level_staff, upload.single('book_image'), books_controller.post_book);
 // Patch a Book
-router.patch('/:id', upload.single('book_image'), books_controller.patch_book);
+router.patch('/:id', auth_middleware.level_staff, upload.single('book_image'), books_controller.patch_book);
 // Delete a Book
-router.delete('/:id', books_controller.delete_book);
+router.delete('/:id', auth_middleware.level_admin, books_controller.delete_book);
 
 module.exports = router;

@@ -20,30 +20,8 @@ Untuk mengakses api yang disediakan, harus memiliki akses dengan login terlebih 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
 
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 200,
-    "message": "Ok!",
-    "data": [
-        {
-            "user_id": 10,
-            "user_name": "name",
-            "user_role": 1,
-            "created_at": "2020-06-12T06:27:14.000Z",
-            "updated_at": "2020-06-12T06:27:14.000Z",
-            "token_login": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwidXNlcl9uYW1lIjoibmFtZSIsInVzZXJfcm9sZSI6MSwiY3JlYXRlZF9hdCI6IjIwMjAtMDYtMTJUMDY6Mjc6MTQuMDAwWiIsInVwZGF0ZWRfYXQiOiIyMDIwLTA2LTEyVDA2OjI3OjE0LjAwMFoiLCJpYXQiOjE1OTIwNTUxNDksImV4cCI6MTU5MjA1NTc0OX0.34dhvU8xZL5i4PfJFL7BKluw-bhJesuxL9tlFotbTb4",
-            "token_refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwidXNlcl9uYW1lIjoibmFtZSIsInVzZXJfcm9sZSI6MSwiY3JlYXRlZF9hdCI6IjIwMjAtMDYtMTJUMDY6Mjc6MTQuMDAwWiIsInVwZGF0ZWRfYXQiOiIyMDIwLTA2LTEyVDA2OjI3OjE0LjAwMFoiLCJpYXQiOjE1OTIwNTUxNDksImV4cCI6MTU5MjY1OTk0OX0.VaP70xaKljKh3lYDZHcssH1fsxCRbqidUtG3pTZOT7Q"
-        }
-    ]
-}
-```
-
 ### 2. Register API
 > http://localhost:3000/auth/register
-
 
 ### Field
 
@@ -55,20 +33,6 @@ Hasil ketika sukses:
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
-
-### Result
-Hasil ketika sukses:
-```
-{
-    "status_execution": "success",
-    "status_code": 201,
-    "message": "Created!",
-    "data": {
-        "user_name": "name",
-        "user_role": "1"
-    }
-}
-```
 
 ## II. Books
 Mengakses buku, detail buku dan pencarian
