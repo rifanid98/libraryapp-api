@@ -126,6 +126,18 @@ module.exports = {
         })
     },
 
+    get_data_by_name: function (data) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = "SELECT * FROM books WHERE book_title = ?";
+            conn.query(sqlQuery, data, function (error, result) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(result);
+            })
+        })
+    },
+
     get_data_by_sort: function (sort) {
         return new Promise((resolve, reject) => {
             const sqlQuery =
