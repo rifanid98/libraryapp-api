@@ -132,13 +132,24 @@ async function post_book(req,res) {
               ...body,
               book_image: `${config.imageStaticPath(req)}${req.file.filename}`
             };
-            const result = await books_model.add_data(data);
-            if (result.affectedRows > 0) {
-              return myResponse.response(res, "success", data, 201, "Created!");
+            const check_book = await books_model.get_data_by_name(data.book_title);
+            console.log(check_book.length);
+            
+            if (check_book.length < 1) {
+                const result = await books_model.add_data(data);
+                if (result.affectedRows > 0) {
+                    return myResponse.response(res, "success", data, 201, "Created!");
+                } else {
+                    // delete new image when insert data is failed
+                    delete_image(req.file.filename);
+                    return myResponse.response( res, "failed", data, 404, "Not Found!");
+                }
             } else {
-              // delete new image when insert data is failed
-              delete_image(req.file.filename);
-              return myResponse.response( res, "failed", data, 404, "Not Found!");
+                const message = {
+                    error: 'duplicate data',
+                    message: `${data.book_title} is exists`
+                }
+                return myResponse.response(res, "failed", "", 409, message);
             }
         } else {
             return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
@@ -148,6 +159,10 @@ async function post_book(req,res) {
             // delete new image when validation error
             delete_image(req.file.filename);
             return myResponse.response(res, "failed", error, 500, "Internal Server Error")
+        }
+        if ('sqlMessage' in error) {
+            console.log(error);
+            return myResponse.response(res, "failed", "", 500, "Internal Server Error")
         }
         console.log(error);
         return myResponse.response(res, "failed", error, 500, "Internal Server Error")
@@ -176,13 +191,13 @@ async function patch_book(req,res) {
             };
 
             if (result.affectedRows > 0) {
-            // delete old image
-            delete_image(old_data[0].book_image);
-            return myResponse.response(res, "success", newData, 200, "Updated!");
+                // delete old image
+                delete_image(old_data[0].book_image);
+                return myResponse.response(res, "success", newData, 200, "Updated!");
             } else {
-            // delete new image when update data is failed
-            delete_image(req.file.filename);
-            return myResponse.response(res, "failed", newData, 404, "Not Found!");
+                // delete new image when update data is failed
+                delete_image(req.file.filename);
+                return myResponse.response(res, "failed", newData, 404, "Not Found!");
             }
         } else {
             return myResponse.response(res, "failed", "there is no files to upload", 500, "Internal Server Error");
