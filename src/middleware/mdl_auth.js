@@ -7,8 +7,16 @@ module.exports = {
         const token = req.headers.authorization;
         try {
             const decoded = jwt.verify(token, config.jwtSecretKey);
-            req.decodedToken = decoded;
-            next();
+            if (decoded.tokenType == 'login') {
+                req.decodedToken = decoded;
+                next();
+            } else {
+                const message = {
+                    error: 'Wrong token',
+                    message: 'Please use login token'
+                }
+                return myResponse.response(res, "failed", "", 500, message);
+            }
         } catch (error) {
             switch (error.name) {
                 case 'TokenExpiredError':
@@ -18,6 +26,7 @@ module.exports = {
                     }
                     return myResponse.response(res, "failed", "", 500, message);
                     break;
+                    
                 case 'JsonWebTokenError':
                     var message = {
                         error: error.message,
