@@ -33,14 +33,23 @@ module.exports = {
         try {
             const data = req.body;
             const error = await validate.validate_register(data);
+            
+            const check_data = await auth_model.get_data_by_name(data.user_name);
+            if (check_data < 1) {
+                const salt = bcrypt.genSaltSync(10);
+                const hash = bcrypt.hashSync(data.user_password, salt);
+                data.user_password = hash;
 
-            const salt = bcrypt.genSaltSync(10);
-            const hash = bcrypt.hashSync(data.user_password, salt);
-            data.user_password = hash;
-
-            const result = await auth_model.register(data);
-            delete data.user_password;
-            return myResponse.response(res, "success", data, 201, "Created!");
+                const result = await auth_model.register(data);
+                delete data.user_password;
+                return myResponse.response(res, "success", data, 201, "Created!");
+            } else {
+                const message = {
+                    error: 'duplicate data',
+                    message: `${data.user_name} is exists`
+                }
+                return myResponse.response(res, "failed", "", 409, message);
+            }
         } catch (error) {
             console.log(error);
             return myResponse.response(
@@ -65,15 +74,16 @@ module.exports = {
                 delete result[0].user_password;
 
                 // jsonwebtoken
-                const tokenData = {
+                const tokenLoginData = {
                     ...result[0],
+                    tokenType: 'login'
                 };
-                const token = jwt.sign(tokenData, config.jwtSecretKey, {
-                    expiresIn: config.jwtTokenLoginLifeTime,
-                });
-                const tokenRefresh = jwt.sign(tokenData, config.jwtSecretKey, {
-                    expiresIn: config.jwtTokenRefreshLifeTime,
-                });
+                const token = jwt.sign(tokenLoginData, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                const tokenRefreshData = {
+                    ...result[0],
+                    tokenType: 'refresh'
+                };
+                const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, {expiresIn: config.jwtTokenRefreshLifeTime});
                 result[0].tokenLogin = token;
                 result[0].tokenRefresh = tokenRefresh;
 
@@ -106,16 +116,18 @@ module.exports = {
 
             const token_refresh = data.token_refresh;
             const decoded = jwt.verify(token_refresh, config.jwtSecretKey);
-            let newData = {};
-            for (key in decoded) {
-                if (key != "iat" && key != "exp") {
-                    newData[key] = decoded[key];
+            if (decoded.tokenType == 'refresh') {
+                delete decoded.iat;
+                delete decoded.exp;
+                const token_login = jwt.sign(decoded, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                return myResponse.response(res, "success", { token_login: token_login }, 200, "Ok!");
+            } else {
+                const message = {
+                    error: 'Wrong token',
+                    message: 'Please use refresh token'
                 }
+                return myResponse.response(res, "failed", error, 500, message);
             }
-            const token_login = jwt.sign(newData, config.jwtSecretKey, {
-                expiresIn: config.jwtTokenLoginLifeTime,
-            });
-            return myResponse.response(res, "success", { token_login: token_login }, 200, "Ok!");
         } catch (error) {
             if ("joiError" in error) {
                 // delete new image when validation error
