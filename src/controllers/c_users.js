@@ -16,6 +16,8 @@ const my_response = require("../helpers/my_response");
 // import joi
 const validate = require('../helpers/joi_schema');
 
+// import custom error message
+const error_message = require("../helpers/my_error_message");
 
 /**
  * CRUD
@@ -29,7 +31,7 @@ async function get_users(req, res) {
         return my_response.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
     }
 }
 

@@ -52,7 +52,7 @@ module.exports = {
 
             // sort
             if (Object.keys(filters.sort).length > 0) {
-                sqlQuery += " ORDER BY book_" + filters.sort.sort + " ";
+                sqlQuery += " ORDER BY book_" + filters.sort.sort + " ASC";
             }
 
             // pagination

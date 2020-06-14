@@ -16,6 +16,9 @@ const my_response = require("../helpers/my_response");
 // import joi
 const validate = require('../helpers/joi_schema');
 
+// import custom error message
+const error_message = require("../helpers/my_error_message");
+
 /**
  * CRUD
  */
@@ -24,11 +27,10 @@ const validate = require('../helpers/joi_schema');
 async function get_book_genres(req, res) {
     try {
         const result = await book_genres_model.get_all_data();
-
         return my_response.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
     }
 }
 
@@ -39,17 +41,17 @@ async function post_book_genre(req, res) {
 
         const data = req.body;
         let result = await book_genres_model.get_data_by_name(data);
-        console.log(data);
         
         if (result.length < 1) {
             result = await book_genres_model.add_data(data);
             return my_response.response(res, "success", data, 201, "Created!")
         } else {
-            return my_response.response(res, "failed", data, 409, "already exists!")
+            const message = `Duplicate data ${data.book_title}`;
+            return my_response.response(res, "failed", "", 409, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
     }
 }
 
@@ -65,11 +67,12 @@ async function patch_book_genre(req, res) {
         if (result.affectedRows > 0){
             return my_response.response(res, "success", data, 200, "Ok!")
         } else {
-            return my_response.response(res, "failed", data, 200, "data with id " + id + " is not found")
+            const message = `Data with id ${id} is not found`;
+            return my_response.response(res, "failed", "", 404, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
     }
 }
 
@@ -85,11 +88,12 @@ async function delete_book_genre(req, res) {
         if (result.affectedRows >0) {
             return my_response.response(res, "success", data, 200, "Deleted!")
         } else {
-            return my_response.response(res, "failed", data, 200, "data with id " + id + " is not found")
+            const message = `Data with id ${id} is not found`;
+            return my_response.response(res, "failed", "", 404, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, "Internal Server Error");
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
     }
 }
 
