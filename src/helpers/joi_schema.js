@@ -83,6 +83,20 @@ module.exports = {
            resolve();
         });
     },
+    validate_borrow: function (user_data) {
+        const joi_schema = {
+            book_id: Joi.number().min(1).required()
+        };
+
+        return new Promise((resolve, reject) => {
+            const error = Joi.validate(user_data, joi_schema);
+
+            if (error.error != null) {
+                reject(my_joi_error(error));
+            }
+            resolve();
+        });
+    },
     validate_login: function (user_data) {
         const joi_schema = {
             user_name: Joi.string().trim().min(3).required(),
