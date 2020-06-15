@@ -22,6 +22,10 @@ const books_controller = require('../controllers/c_books');
 router.get('/', auth_middleware.level_user, books_controller.get_books);
 // Post a Book
 router.post('/', auth_middleware.level_staff, upload.single('book_image'), books_controller.post_book);
+// Return a Book
+router.patch('/return', auth_middleware.level_user, upload.single('book_image'), books_controller.return_book);
+// Borrow a Book
+router.patch('/borrow', auth_middleware.level_user, upload.single('book_image'), books_controller.borrow_book);
 // Patch a Book
 router.patch('/:id', auth_middleware.level_staff, upload.single('book_image'), books_controller.patch_book);
 // Delete a Book
