@@ -199,7 +199,7 @@ async function patch_book(req,res) {
             }
         } else {
             const message = `There is not file to upload `;
-            return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+            return my_response.response(res, "failed", "", 500, error_message.my_error_message({}, message));
         }
     } catch (error) {
         console.log(error);
@@ -236,9 +236,92 @@ async function delete_book(req,res) {
     }
 }
 
+/**
+ * Another CRUD
+ */
+async function borrow_book(req, res) {
+    try {
+        const field_to_patch = Object.keys(req.body);
+        const error = await validate.validate_borrow(req.body, field_to_patch);
+
+        const id = req.body.book_id;
+        const old_data = await get_book_by_id(id);
+
+        if (old_data.length < 1) {
+            const message = `Data with id ${id} not found`;
+            return my_response.response(res, "failed", "", 404, message);
+        }
+        
+        if (old_data[0].book_status == 1) {
+            const message = `Book with id ${old_data[0].book_id} has been borrowed`;
+            return my_response.response(res, "failed", "", 409, message);
+        }
+
+        const data_to_update = {
+            book_status: 1
+        };
+        
+        const result = await books_model.update_data(data_to_update, id);
+
+        if (result.affectedRows > 0) {
+            const new_data = {
+                ...old_data[0]
+            };
+            return my_response.response(res, "success", new_data, 200, "Borrowed!");
+        } else {
+            const message = `Update data ${old_data[0].book_title} failed `;
+            return my_response.response(res, "failed", "", 500, message);
+        }
+    } catch (error) {
+        console.log(error);
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+    }
+}
+async function return_book(req, res) {
+    try {
+        const field_to_patch = Object.keys(req.body);
+        const error = await validate.validate_borrow(req.body, field_to_patch);
+
+        const id = req.body.book_id;
+        const old_data = await get_book_by_id(id);
+
+        if (old_data.length < 1) {
+            const message = `Data with id ${id} not found`;
+            return my_response.response(res, "failed", "", 404, message);
+        }
+
+        if (old_data[0].book_status == 0) {
+            const message = `Book with id ${old_data[0].book_id} has been returned`;
+            return my_response.response(res, "failed", "", 409, message);
+        }
+
+        const data_to_update = {
+            book_status: 0
+        };
+
+        const result = await books_model.update_data(data_to_update, id);
+
+        if (result.affectedRows > 0) {
+            const data = {
+                book_id: old_data[0].book_id
+            };
+            
+            return my_response.response(res, "success", data, 200, "Returned!");
+        } else {
+            const message = `Update data ${old_data[0].book_title} failed `;
+            return my_response.response(res, "failed", "", 500, message);
+        }
+    } catch (error) {
+        console.log(error);
+        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+    }
+}
+
 module.exports = {
     post_book,
     patch_book,
     delete_book,
-    get_books
+    get_books,
+    borrow_book,
+    return_book
 }
