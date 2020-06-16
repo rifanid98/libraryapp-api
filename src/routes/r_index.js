@@ -8,6 +8,7 @@ const router = express.Router();
 
 // import middleware
 const auth_middleware = require('../middleware/mdl_auth');
+const validation_middleware = require('../middleware/mdl_validation');
 
 /**
  * Load All Routes
@@ -20,9 +21,9 @@ const users_router = require('./r_users');
 /**
  * Fire the router
  */
-router.use('/books', auth_middleware.verify_jwt_token, books_router);
-router.use('/book_genres', auth_middleware.verify_jwt_token, book_genres_router);
-router.use('/auth', auth_router);
-router.use("/users", auth_middleware.verify_jwt_token, users_router);
+router.use('/books', validation_middleware.xss_escape , auth_middleware.verify_jwt_token, books_router);
+router.use('/book_genres', validation_middleware.xss_escape, auth_middleware.verify_jwt_token, book_genres_router);
+router.use('/auth', validation_middleware.xss_escape, auth_router);
+router.use("/users", validation_middleware.xss_escape, auth_middleware.verify_jwt_token, users_router);
 
 module.exports = router;
