@@ -52,7 +52,20 @@ module.exports = {
 
             // sort
             if (Object.keys(filters.sort).length > 0) {
-                sqlQuery += " ORDER BY book_" + filters.sort.sort + " ASC";
+                conn.query("DESCRIBE books", filters.search, function (error, result) {
+                    if (error) {
+                        reject(error);
+                    }
+                    let fields = {};
+                    result.forEach(field => {
+                        fields[field.Field] = field.Field;
+                    });
+                    
+                    if (`book_${filters.sort.sort}` in fields) {
+                        sqlQuery += " ORDER BY book_" + filters.sort.sort + " ASC";
+                    }
+                })
+                
             }
 
             // pagination
