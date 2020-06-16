@@ -26,6 +26,8 @@ const error_message = require("../helpers/my_error_message");
 // import delete
 const delete_image = require("../helpers/delete_image");
 
+
+
 /**
  * Custom Function
  */
@@ -43,7 +45,7 @@ function generate_filters(filters = {}, fields = {}) {
             // masukin ke search
             if (filter == field_name) {
                 if (filter in search == false) {
-                    search[filter] = filters[filter].escape();
+                    search[filter] = filters[filter];
                 }
             }
         }
@@ -57,7 +59,7 @@ function generate_filters(filters = {}, fields = {}) {
     
     // get sort filters
     if(filters.sort && filters.sort.length > 0) {
-        sort.sort = (filters.sort).escape();
+        sort.sort = (filters.sort);
     }
     
     return {
@@ -76,19 +78,6 @@ async function get_book_by_id(id = 0) {
         return 'error';
     }
 }
-
-String.prototype.escape = function () {
-  var tagsToReplace = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&apos;",
-    '"': "&quot;"
-  };
-  return this.replace(/[&<>\'\"]/g, function (tag) {
-    return tagsToReplace[tag] || tag;
-  });
-};
 
 /**
  * CRUD
