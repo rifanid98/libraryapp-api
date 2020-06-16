@@ -7,7 +7,7 @@ module.exports = {
         const token = req.headers.authorization;
         try {
             const decoded = jwt.verify(token, config.jwt_secret_key);
-            if (decoded.tokenType == 'login') {
+            if (decoded.token_type == 'login') {
                 req.decoded_token = decoded;
                 next();
             } else {

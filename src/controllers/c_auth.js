@@ -67,12 +67,12 @@ module.exports = {
                     // jsonwebtoken
                     const token_loginData = {
                         ...result[0],
-                        tokenType: 'login'
+                        token_type: 'login'
                     };
                     const token = jwt.sign(token_loginData, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
                     const token_refreshData = {
                         ...result[0],
-                        tokenType: 'refresh'
+                        token_type: 'refresh'
                     };
                     const token_refresh = jwt.sign(token_refreshData, config.jwt_secret_key, {expiresIn: config.jwt_token_refresh_life_time});
                     result[0].token_login = token;
@@ -100,9 +100,12 @@ module.exports = {
 
             const token_refresh = data.token_refresh;
             const decoded = jwt.verify(token_refresh, config.jwt_secret_key);
-            if (decoded.tokenType == 'refresh') {
+            console.log(decoded);
+            
+            if (decoded.token_type == 'refresh') {
                 delete decoded.iat;
                 delete decoded.exp;
+                decoded.token_type = 'login';
                 const token_login = jwt.sign(decoded, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
                 return my_response.response(res, "success", { token_login: token_login }, 200, "Ok!");
             } else {
