@@ -241,10 +241,7 @@ async function delete_book(req,res) {
  */
 async function borrow_book(req, res) {
     try {
-        const field_to_patch = Object.keys(req.body);
-        const error = await validate.validate_borrow(req.body, field_to_patch);
-
-        const id = req.body.book_id;
+        const id = req.params.id;
         const old_data = await get_book_by_id(id);
 
         if (old_data.length < 1) {
@@ -279,10 +276,7 @@ async function borrow_book(req, res) {
 }
 async function return_book(req, res) {
     try {
-        const field_to_patch = Object.keys(req.body);
-        const error = await validate.validate_borrow(req.body, field_to_patch);
-
-        const id = req.body.book_id;
+        const id = req.params.id;
         const old_data = await get_book_by_id(id);
 
         if (old_data.length < 1) {
