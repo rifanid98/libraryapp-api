@@ -9,8 +9,8 @@ const router = express.Router();
 // import multer upload helper
 const upload = require('../helpers/upload');
 
-// import middleware
-const auth_middleware = require('../middleware/mdl_auth');
+// import middlewares
+const auth_middlewares = require('../middlewares/mdl_auth');
 
 /**
  * Controllers
@@ -19,6 +19,6 @@ const auth_middleware = require('../middleware/mdl_auth');
 const users_controller = require('../controllers/c_users');
 
 // register user
-router.get('/', auth_middleware.level_user, users_controller.get_users);
+router.get('/', auth_middlewares.level_user, users_controller.get_users);
 
 module.exports = router;
