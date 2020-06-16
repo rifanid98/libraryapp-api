@@ -39,9 +39,11 @@ Mengakses buku, detail buku dan pencarian
 
 **URL API**
 > http://localhost:3000/libraryapp-api/books [GET]<br>
-> http://localhost:3000/libraryapp-api/books [POST]<br>
-> http://localhost:3000/libraryapp-api/books/:id [PATCH]<br>
-> http://localhost:3000/libraryapp-api/books/:id [DELETE]
+> http://localhost:3000/libraryapp-api/books/add [POST]<br>
+> http://localhost:3000/libraryapp-api/books/update/:id [PATCH]<br>
+> http://localhost:3000/libraryapp-api/books/delete/:id [DELETE]<br>
+> http://localhost:3000/libraryapp-api/books/borrow/:id [PATCH]<br>
+> http://localhost:3000/libraryapp-api/books/return/:id [PATCH]
 
 ### 1. GET Books
 > http://localhost:3000/libraryapp-api/books [GET]
@@ -91,8 +93,8 @@ Note:
 Pagination Example:
 - http://ocalhost:3000/libraryapp-api/books?page=1&limit=4
 
-### 2. POST Books
-> http://localhost:3000/libraryapp-api/books [POST]
+### 2. POST Book
+> http://localhost:3000/libraryapp-api/books/add [POST]
 
 Note: 
 Menambahkan buku
@@ -111,8 +113,8 @@ Menambahkan buku
 ### Body
 Mendukung application/json, urlencoded dan form-data format
 
-### 3. PATCH Books
-> http://localhost:3000/libraryapp-api/books/:id [PATCH]
+### 3. PATCH Book
+> http://localhost:3000/libraryapp-api/books/update/:id [PATCH]
 
 Note: 
 - Mengupdate buku
@@ -134,14 +136,33 @@ Contoh : http://localhost:3000/libraryapp-api/books/20
 ### Body
 Mendukung application/json, urlencoded dan form-data format
 
-### 4. DELETE Books
-> http://localhost:3000/libraryapp-api/books/:id [DELETE]
+### 4. DELETE Book
+> http://localhost:3000/libraryapp-api/books/delete/:id [DELETE]
 
 Note: 
 - Menghapus buku
 - :id merupakan ID Buku
 
 Contoh : http://localhost:3000/libraryapp-api/books/20
+
+### 5. Borrow Book
+> http://localhost:3000/libraryapp-api/books/borrow/:id [PATCH]
+
+Note: 
+- Meminjam buku
+- :id merupakan ID Buku
+
+Contoh : http://localhost:3000/libraryapp-api/books/borrow/20
+
+### 6. Return Book
+> http://localhost:3000/libraryapp-api/books/return/:id [PATCH]
+
+Note: 
+- Meminjam buku
+- :id merupakan ID Buku
+
+Contoh : http://localhost:3000/libraryapp-api/books/return/20
+
 
 ## III. Book Genres
 Mengakses genre buku
