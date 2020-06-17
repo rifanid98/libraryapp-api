@@ -130,6 +130,10 @@ async function post_book(req,res) {
                     return my_response.response(res, "failed", "", 409, message);
                 }
             } else {
+                // delete new image when duplicated data
+                const my_request = { protocol: req.protocol, host: req.get('host') }
+                delete_image.delete(my_request, req.file.filename);
+                
                 const message = `Duplicate data ${data.book_title}`;
                 return my_response.response(res, "failed", "", 409, message);
             }
