@@ -34,7 +34,7 @@
 - [x] Password hashing
 
 ## Examples
-[How to use](https://github.com/rifanid98/libraryapp-api/)
+[How to use](https://github.com/rifanid98/libraryapp-api/blob/master/examples.md)
 
 ## Built with
 - [Node.js](http://nodejs.org/) - JavaScript runtime environment
