@@ -42,45 +42,15 @@ module.exports = {
             }
         }
     },
-    level_admin: function(req, res, next) {
+    check_role: (roles) => (req, res, next) => {
         try {
             const user_role = req.decoded_token.user_role;
-            if (user_role == 1) {
+            if (roles.find(element => element == user_role)) {
                 next();
             } else {
                 const message = `Invalid user`;
                 return my_response.response(res, "failed", "", 500, message)
             }
-        } catch (error) {
-            console.log(error);
-            const message = `Internal Server Error`;
-            return my_response.response(res, "failed", "", 500, message)
-        }
-    },
-    level_staff: function(req, res, next) {
-        try {
-            const user_role = req.decoded_token.user_role;
-            if (user_role == 2 || user_role == 1) {
-                next();
-            } else {
-                const message = `Invalid user`;
-                return my_response.response(res, "failed", "", 500, message)
-            }
-        } catch (error) {
-            console.log(error);
-            const message = `Internal Server Error`;
-            return my_response.response(res, "failed", "", 500, message)
-        }
-    },
-    level_user: function(req, res, next) {
-        try {
-            const user_role = req.decoded_token.user_role;
-            if (user_role == 3 || user_role == 2 || user_role == 1) {
-                next();
-            } else {
-                const message = `Invalid user`;
-                return my_response.response(res, "failed", "", 500, message)
-            }   
         } catch (error) {
             console.log(error);
             const message = `Internal Server Error`;
