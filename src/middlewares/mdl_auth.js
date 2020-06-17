@@ -45,7 +45,7 @@ module.exports = {
     check_role: (roles) => (req, res, next) => {
         try {
             const user_role = req.decoded_token.user_role;
-            if (roles.find(element => element == user_role)) {
+            if (roles.find(element => element == user)) {
                 next();
             } else {
                 const message = `Invalid user`;
