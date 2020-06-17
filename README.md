@@ -1,219 +1,52 @@
-# libraryapp-api
-
-## I. Authorization
-Untuk mengakses api yang disediakan, harus memiliki akses dengan login terlebih dahulu
-
-**URL API**
-> http://localhost:3000/auth/login [POST] <br>
-> http://localhost:3000/auth/register [POST] <br>
-
-### 1. Login API
-> http://localhost:3000/auth/login [POST]
-
-### Field
-
-| Name          | Type          | Required |
-| ------------- | ------------- | -------- |
-| user_name     | string        | true     | 
-| user_password | string        | true     |
-
-### Body
-Mendukung application/json, urlencoded dan form-data format
-
-### 2. Register API
-> http://localhost:3000/auth/register
-
-### Field
-
-| Name          | Type          | Required | 
-| ------------- | ------------- | -------- | 
-| user_name     | string        | true     | 
-| user_password | string        | true     |
-| user_role     | number        | true     |
-
-### Body
-Mendukung application/json, urlencoded dan form-data format
-
-## II. Books
-Mengakses buku, detail buku dan pencarian
-
-**URL API**
-> http://localhost:3000/libraryapp-api/books [GET]<br>
-> http://localhost:3000/libraryapp-api/books/add [POST]<br>
-> http://localhost:3000/libraryapp-api/books/update/:id [PATCH]<br>
-> http://localhost:3000/libraryapp-api/books/delete/:id [DELETE]<br>
-> http://localhost:3000/libraryapp-api/books/borrow/:id [PATCH]<br>
-> http://localhost:3000/libraryapp-api/books/return/:id [PATCH]
-
-### 1. GET Books
-> http://localhost:3000/libraryapp-api/books [GET]
-
-
-### Parameter
-> - Search
-
-| Name       | Type                 | Required | 
-| ---------- | -------------------- | -------- | 
-| desctipion | string               | optional | 
-| title      | string               | optional |
-| genre      | number [Foreign Key] | optional |
-| author     | string               | optional |
-| status     | number [0/1]         | optional |
-
-Note: 
-- Genre  : Id of genres
-- Status : [0/1] [Not Booked/Booked]
-
-Search Example:
-- http://localhost:3000/libraryapp-api/books?description=some description&author=John Doe&title=The Love&genre=romance&status=1
-
-> - Sort
-
-| Name   | Type            | Required | 
-| ------ | --------------- | -------- | 
-| sort   | string [field]  | optional |
-
-Note:
-- Sort : [field] sort by [description/title/genre/author/status] 
-
-Sort Example:
-- http://localhost:3000/libraryapp-api/books?sort=author
-
-> - Pagination
-
-| Name   | Type   | Required                       | 
-| ------ | ------ | ------------------------------ | 
-| page   | string | optional                       |
-| limit  | string | required if use the page param |
-
-Note:
-- Page  : The number of page you want to request
-- Limit : Total data per page (required if page param is used)
-
-Pagination Example:
-- http://ocalhost:3000/libraryapp-api/books?page=1&limit=4
-
-### 2. POST Book
-> http://localhost:3000/libraryapp-api/books/add [POST]
-
-Note: 
-Menambahkan buku
-
-### Field
-
-| Name             | Type                | Required | 
-| ---------------- | ------------------- | -------- | 
-| book_title       | string              | true     |
-| book_description | string              | true     |
-| book_image       | file [jpg/jpeg]     | true     |
-| book_author      | string              | true     |
-| book_status      | number              | true     |
-| book_genre_id    | number [foreign key]| true     |
-
-### Body
-Mendukung application/json, urlencoded dan form-data format
-
-### 3. PATCH Book
-> http://localhost:3000/libraryapp-api/books/update/:id [PATCH]
-
-Note: 
-- Mengupdate buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/books/20
-
-### Field
-
-| Name             | Type                | Required | 
-| ---------------- | ------------------- | -------- | 
-| book_title       | string              | true     |
-| book_description | string              | true     |
-| book_image       | file [jpg/jpeg]     | true     |
-| book_author      | string              | true     |
-| book_status      | number              | true     |
-| book_genre_id    | number [foreign key]| true     |
-
-### Body
-Mendukung application/json, urlencoded dan form-data format
-
-### 4. DELETE Book
-> http://localhost:3000/libraryapp-api/books/delete/:id [DELETE]
-
-Note: 
-- Menghapus buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/books/20
-
-### 5. Borrow Book
-> http://localhost:3000/libraryapp-api/books/borrow/:id [PATCH]
-
-Note: 
-- Meminjam buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/books/borrow/20
-
-### 6. Return Book
-> http://localhost:3000/libraryapp-api/books/return/:id [PATCH]
-
-Note: 
-- Meminjam buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/books/return/20
-
-
-## III. Book Genres
-Mengakses genre buku
-
-**URL API**
-> http://localhost:3000/libraryapp-api/book_genres [GET]<br>
-> http://localhost:3000/libraryapp-api/book_genres [POST]<br>
-> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]<br>
-> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
-
-### 1. GET Book Genres
-> http://localhost:3000/libraryapp-api/book_genres [GET]
-
-Note: 
-Mendapatkan seluruh genre
-
-### 2. POST Book Genre
-> http://localhost:3000/libraryapp-api/book_genres [POST]
-
-Note: 
-Menambahkan seluruh genre
-
-### Field
-
-| Name             | Type     | Required | 
-| ---------------- | -------- | -------- | 
-| book_genre_name  | string   | true     |
-
-### 3. PATCH Book Genre
-> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
-
-Note: 
-- Mengupdate buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/book_genres/3
-
-### Field
-
-| Name             | Type     | Required | 
-| ---------------- | -------- | -------- | 
-| book_genre_name  | string   | true     |
-
-### Body
-Mendukung application/json, urlencoded dan form-data format
-
-### 4. DELETE Book Genre
-> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
-
-Note: 
-- Menghapus buku
-- :id merupakan ID Buku
-
-Contoh : http://localhost:3000/libraryapp-api/book_genres/3
+`***libraryapp-api***` is a simple api endpoint for library application built with Node.js, Express Js as a framework of Node.js and MySQL as a database which has [features](https://github.com/rifanid98/libraryapp-api#features) such as login / register using JWT, pasword hashing, CORS, etc. 
+
+## :memo: Table Of Content
+* [Prerequisites](https://github.com/rifanid98/libraryapp-api#prerequisites)
+* [Installation](https://github.com/rifanid98/libraryapp-api#installation)
+* [Features](https://github.com/rifanid98/libraryapp-api#features)
+* [Examples](https://github.com/rifanid98/libraryapp-api#examples)
+* [Built wtih](https://github.com/rifanid98/libraryapp-api#features)
+* [Author](https://github.com/rifanid98/libraryapp-api#author)
+* [License](https://github.com/rifanid98/libraryapp-api#license)
+
+## Prerequisites
+- Node.js installed on the local machine
+- MySQL intalled on the local machine (ex. XAMPP)
+
+## Installation
+1. Clone this repository:
+    `git clone https://github.com/rifanid98/libraryapp-api`
+2. Start XAMPP
+3. Database configuration:
+    * Open http://localhost/phpmyadmin in the browser
+    * Import database, select `libraryapp.sql` file from project folder
+4. Start the server:
+    * Open root project folder with command line (terminal, linux. cmd, windows. etc.)
+    * Type and run this command `npm start` to start the server.
+    * Make sure there are no other processes that use port 3000
+5. Run app with api testing tools like postman, etc. on http://localhost:3000/libraryapp-api/
+
+## Features
+- [x] CRUD
+- [x] Search, Sort, Pagination
+- [x] CORS allowed
+- [x] Login/Register with JWT
+- [x] Password hashing
+
+## Examples
+[How to use](https://github.com/rifanid98/libraryapp-api/)
+
+## Built with
+- [Node.js](http://nodejs.org/) - JavaScript runtime environment
+- [Express.js](https://expressjs.com/) - Node.js framework
+- [MySQL](https://www.mysql.com/) Database
+- [JWT](https://jwt.io/) - Login/Register authentication
+- [Bcrypt](https://github.com/kelektiv/node.bcrypt.js) - Password Hashing
+
+## Author
+- [Adnin Rifandi Sutanto Putra](https://www.linkedin.com/in/adnin-rifandi-s-5a9135129/)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/rifanid98/libraryapp-api/blob/master/LICENSE) file for details
+
+Thanks to [Daniel Saputra](https://www.linkedin.com/in/danielwetan/) for the readme layout.
