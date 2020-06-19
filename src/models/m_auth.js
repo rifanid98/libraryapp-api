@@ -20,7 +20,7 @@ module.exports = {
 
     login: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM users WHERE user_name = ?";
+            const sqlQuery = "SELECT * FROM users WHERE username = ?";
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
                     reject(error);
@@ -30,9 +30,9 @@ module.exports = {
         })
     },
 
-    get_data_by_name: function (data) {
+    getDataByName: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM users WHERE user_name = ?";
+            const sqlQuery = "SELECT * FROM users WHERE username = ?";
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
                     reject(error);

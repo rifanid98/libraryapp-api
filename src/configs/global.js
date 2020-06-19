@@ -5,12 +5,12 @@ const config = {
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
   },
-  jwt_secret_key: process.env.JWT_KEY,
-  jwt_token_login_life_time: '600s',
-  jwt_token_refresh_life_time: '7d',
-  root_project_path: 'libraryapp-api',
-  image_url_path: function (req) {
-    return `${req.protocol}://${req.get("host")}/${this.root_project_path}/images/`;
+  jwtSecretKey: process.env.JWT_KEY,
+  jwtTokenLoginLifeTime: '600s',
+  jwtTokenRefreshLifeTime: '7d',
+  rootProjectPath: 'libraryapp-api',
+  imageUrlPath: function (req) {
+    return `${req.protocol}://${req.get("host")}/${this.rootProjectPath}/images/`;
   }
 };
 

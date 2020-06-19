@@ -1,21 +1,21 @@
 const jwt = require('jsonwebtoken');
 const config = require('../configs/global');
-const my_response = require('../helpers/my_response');
+const myResponse = require('../helpers/myResponse');
 
 module.exports = {
-    verify_jwt_token: function(req, res, next) {
+    verifyJwtToken: function(req, res, next) {
         const token = req.headers.authorization;
         try {
-            const decoded = jwt.verify(token, config.jwt_secret_key);
-            if (decoded.token_type == 'login') {
-                req.decoded_token = decoded;
+            const decoded = jwt.verify(token, config.jwtSecretKey);
+            if (decoded.tokenType == 'login') {
+                req.decodedToken = decoded;
                 next();
             } else {
                 const message = {
                     error: 'Wrong token',
                     message: 'Please use login token'
                 }
-                return my_response.response(res, "failed", "", 500, message);
+                return myResponse.response(res, "failed", "", 500, message);
             }
         } catch (error) {
             switch (error.name) {
@@ -24,7 +24,7 @@ module.exports = {
                         error: error.message,
                         message: 'Please refresh token'
                     }
-                    return my_response.response(res, "failed", "", 500, message);
+                    return myResponse.response(res, "failed", "", 500, message);
                     break;
                     
                 case 'JsonWebTokenError':
@@ -32,29 +32,30 @@ module.exports = {
                         error: error.message,
                         message: 'Please login'
                     }
-                    return my_response.response(res, "failed", "", 500, message);
+                    return myResponse.response(res, "failed", "", 500, message);
                     break;
             
                 default:
                     console.log(error);
-                    return my_response.response(res, "failed", "", 500, "Internal Server Error!")
+                    return myResponse.response(res, "failed", "", 500, "Internal Server Error!")
                     break;
             }
         }
     },
-    check_role: (roles) => (req, res, next) => {
+    checkRole: (roles) => (req, res, next) => {
         try {
-            const user_role = req.decoded_token.user_role;
-            if (roles.find(element => element == user_role)) {
+            const role = req.decodedToken.role;
+            
+            if (roles.find(element => element == role)) {
                 next();
             } else {
                 const message = `Invalid user`;
-                return my_response.response(res, "failed", "", 500, message)
+                return myResponse.response(res, "failed", "", 500, message)
             }
         } catch (error) {
             console.log(error);
             const message = `Internal Server Error`;
-            return my_response.response(res, "failed", "", 500, message)
+            return myResponse.response(res, "failed", "", 500, message)
         }
     }
 }

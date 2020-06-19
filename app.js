@@ -63,7 +63,7 @@ app.use(body_parser.json());
  * Menerima data form
  */
 // for parsing multipart/form-data
-app.use(`/${config.root_project_path}`, express.static("src/assets/"));
+app.use(`/${config.rootProjectPath}`, express.static("src/assets/"));
 // app.use("/libraryapp-api", express.static("src/assets/"));
 
 /**
@@ -74,7 +74,7 @@ app.use(`/${config.root_project_path}`, express.static("src/assets/"));
 // Load routes
 const routes = require('./src/routes/r_index');
 // set the routes
-app.use(`/${config.root_project_path}`, routes);
+app.use(`/${config.rootProjectPath}`, routes);
 // app.use('/libraryapp-api', routes);
 
 /**============================= URLs ============================= */

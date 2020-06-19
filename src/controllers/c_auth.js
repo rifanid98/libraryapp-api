@@ -3,18 +3,19 @@
  * .
  * Load Model
  */
-const auth_model = require("../models/m_auth");
+const authModel = require("../models/m_auth");
 
 /**
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, status_execution, data, status_code, message)
+ * response: function(res, statusExecution, data, statusCode, message)
  */
-const my_response = require("../helpers/my_response");
+const myResponse = require("../helpers/myResponse");
 
 // import joi
-const validate = require("../helpers/joi_schema");
+const validate = require("../helpers/joiSchema");
+// const validate = require("../helpers/joiSchema");
 
 // import bcrypt
 const bcrypt = require("bcrypt");
@@ -26,95 +27,99 @@ const jwt = require("jsonwebtoken");
 const config = require("../configs/global");
 
 // import custom error message
-const error_message = require("../helpers/my_error_message");
+const errorMessage = require("../helpers/myErrorMessage");
 
 module.exports = {
 
     register: async function (req, res) {
         try {
             const data = req.body;
-            const error = await validate.validate_register(data);
+            const error = await validate.validateRegister(data);
             
-            const check_data = await auth_model.get_data_by_name(data.user_name);
-            if (check_data < 1) {
+            const checkData = await authModel.getDataByName(data.username);
+            console.log(checkData);
+            
+            if (checkData < 1) {
                 const salt = bcrypt.genSaltSync(10);
-                const hash = bcrypt.hashSync(data.user_password, salt);
-                data.user_password = hash;
+                const hash = bcrypt.hashSync(data.password, salt);
+                data.password = hash;
 
-                const result = await auth_model.register(data);
-                delete data.user_password;
-                return my_response.response(res, "success", data, 201, "Created!");
+                const result = await authModel.register(data);
+                delete data.password;
+                return myResponse.response(res, "success", data, 201, "Created!");
             } else {
-                const message = `duplicate data. ${data.user_name} is exists`;
-                return my_response.response(res, "failed", "", 409, message);
+                const message = `duplicate data. ${data.username} is exists`;
+                return myResponse.response(res, "failed", "", 409, message);
             }
         } catch (error) {
             console.log(error);
-            return my_response.response( res, "failed", "", 500, error_message.my_error_message(error, {}));
+            return myResponse.response( res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
         }
     },
 
     login: async function (req, res) {
         try {
             const data = req.body;
-            const error = await validate.validate_login(data);
+            const error = await validate.validateLogin(data);
 
-            const result = await auth_model.login(data.user_name);
+            const result = await authModel.login(data.username);
+            console.log(result);
+            
             if (result.length > 0) {
-                if (bcrypt.compareSync(data.user_password, result[0].user_password)) {
-                    delete result[0].user_password;
+                if (bcrypt.compareSync(data.password, result[0].password)) {
+                    delete result[0].password;
 
                     // jsonwebtoken
-                    const token_loginData = {
+                    const tokenLoginData = {
                         ...result[0],
-                        token_type: 'login'
+                        tokenType: 'login'
                     };
-                    const token = jwt.sign(token_loginData, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
-                    const token_refreshData = {
+                    const token = jwt.sign(tokenLoginData, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                    const tokenRefreshData = {
                         ...result[0],
-                        token_type: 'refresh'
+                        tokenType: 'refresh'
                     };
-                    const token_refresh = jwt.sign(token_refreshData, config.jwt_secret_key, {expiresIn: config.jwt_token_refresh_life_time});
-                    result[0].token_login = token;
-                    result[0].token_refresh = token_refresh;
+                    const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, {expiresIn: config.jwtTokenRefreshLifeTime});
+                    result[0].tokenLogin = token;
+                    result[0].tokenRefresh = tokenRefresh;
 
-                    return my_response.response(res, "success", result, 200, "Ok!");
+                    return myResponse.response(res, "success", result, 200, "Ok!");
                 } else {
                     const message = `Username or Password is wrong!`;
-                    return my_response.response( res, "failed", "", 400, message);
+                    return myResponse.response( res, "failed", "", 400, message);
                 }
             } else {
                 const message = `Username or Password is wrong!`;
-                return my_response.response(res, "failed", "", 400, message);
+                return myResponse.response(res, "failed", "", 400, message);
             }
         } catch (error) {
             console.log(error);
-            return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+            return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
         }
     },
 
     refresh_token: async function (req, res) {
         try {
             const data = req.body;
-            const error = await validate.validate_refresh_token(data);
+            const error = await validate.validateRefreshToken(data);
 
-            const token_refresh = data.token_refresh;
-            const decoded = jwt.verify(token_refresh, config.jwt_secret_key);
+            const tokenRefresh = data.tokenRefresh;
+            const decoded = jwt.verify(tokenRefresh, config.jwtSecretKey);
             console.log(decoded);
             
-            if (decoded.token_type == 'refresh') {
+            if (decoded.tokenType == 'refresh') {
                 delete decoded.iat;
                 delete decoded.exp;
-                decoded.token_type = 'login';
-                const token_login = jwt.sign(decoded, config.jwt_secret_key, {expiresIn: config.jwt_token_login_life_time});
-                return my_response.response(res, "success", { token_login: token_login }, 200, "Ok!");
+                decoded.tokenType = 'login';
+                const tokenLogin = jwt.sign(decoded, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                return myResponse.response(res, "success", { tokenLogin: tokenLogin }, 200, "Ok!");
             } else {
                 const message = `Wrong token. Please use refresh token`;
-                return my_response.response(res, "failed", error, 500, message);
+                return myResponse.response(res, "failed", error, 500, message);
             }
         } catch (error) {
             console.log(error);
-            return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+            return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
         }
     },
 };

@@ -1,10 +1,8 @@
-const { query } = require('express');
-
 // import xss escape characters
-require('../helpers/xss_escape');
+require('../helpers/xssEscape');
 
 module.exports = {
-    xss_escape: function(req, res, next) {
+    xssEscape: function(req, res, next) {
         for (key in req.query) {
             req.query[key] = req.query[key].escape();
         }

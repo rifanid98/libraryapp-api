@@ -7,9 +7,9 @@ const conn = require('../helpers/mysql');
 
 module.exports = {
 
-    get_all_data: function () {
+    getAllData: function () {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM book_genres";
+            const sqlQuery = "SELECT * FROM genres";
             conn.query(sqlQuery, function (error, result) {
                 if (error) {
                     reject(error);
@@ -19,9 +19,9 @@ module.exports = {
         })
     },
 
-    get_data_by_name: function (data) {
+    getDataByName: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM book_genres WHERE ?";
+            const sqlQuery = "SELECT * FROM genres WHERE ?";
             
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
@@ -32,9 +32,9 @@ module.exports = {
         })
     },
 
-    add_data: function (data) {
+    addData: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "INSERT INTO book_genres SET ?";
+            const sqlQuery = "INSERT INTO genres SET ?";
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
                     reject(error);
@@ -44,9 +44,9 @@ module.exports = {
         })
     },
 
-    update_data: function (data, id) {
+    updateData: function (data, id) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "UPDATE book_genres SET ? WHERE book_genre_id = ?";
+            const sqlQuery = "UPDATE genres SET ? WHERE genre_id = ?";
             conn.query(sqlQuery, [data, id], function (error, result) {
                 if (error) {
                     reject(error);
@@ -56,9 +56,9 @@ module.exports = {
         })
     },
 
-    delete_data: function (id) {
+    deleteData: function (id) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "DELETE FROM book_genres WHERE book_genre_id = ?";
+            const sqlQuery = "DELETE FROM genres WHERE genre_id = ?";
             conn.query(sqlQuery, id, function (error, result) {
                 if (error) {
                     reject(error);

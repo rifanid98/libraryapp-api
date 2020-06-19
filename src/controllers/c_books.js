@@ -3,35 +3,35 @@
  * .
  * Load Model
  */
-const books_model = require("../models/m_books");
-const dbviews_model = require("../models/m_dbviews");
+const booksModel = require("../models/m_books");
+const dbViewsModel = require("../models/m_dbviews");
 
 /**
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, status_execution, data, status_code, message)
+ * response: function(res, statusExecution, data, statusCode, message)
  */
-const my_response = require("../helpers/my_response");
+const myResponse = require("../helpers/myResponse");
 
 // import joi
-const validate = require('../helpers/joi_schema');
+const validate = require('../helpers/joiSchema');
 
 // import config
 const config = require('../configs/global');
 
 // import custom error message
-const error_message = require("../helpers/my_error_message");
+const errorMessage = require("../helpers/myErrorMessage");
 
 // import delete
-const delete_image = require("../helpers/delete_image");
+const deleteImage = require("../helpers/deleteImage");
 
 
 
 /**
  * Custom Function
  */
-function generate_filters(filters = {}, fields = {}) {
+function generateFilters(filters = {}, fields = {}) {
     let search = {};
     let pagination = {};
     let sort = {};
@@ -39,11 +39,11 @@ function generate_filters(filters = {}, fields = {}) {
     // get search filters
     for (field in fields) {
         // ambil field name
-        const field_name = fields[field].split('_')[1];
+        const fieldName = fields[field];
 
         for (filter in filters) {
             // masukin ke search
-            if (filter == field_name) {
+            if (filter == fieldName) {
                 if (filter in search == false) {
                     search[filter] = filters[filter];
                 }
@@ -69,9 +69,9 @@ function generate_filters(filters = {}, fields = {}) {
     };
 }
 
-async function get_book_by_id(id = 0) {
+async function getBookById(id = 0) {
     try {
-        const result = await books_model.get_data_by_id(id);
+        const result = await booksModel.getDataById(id);
         return result;
     } catch (error) {
         console.log(error);
@@ -82,86 +82,86 @@ async function get_book_by_id(id = 0) {
 /**
  * CRUD
  */
-async function get_books(req,res) {
+async function getBooks(req,res) {
     try {
         const filters = req.query;
         
-        const fields = await dbviews_model.get_book_and_genre_field_name();
-        const total_data = await books_model.get_all_data();
-        const generated_filters = generate_filters(filters, fields);
+        const fields = await dbViewsModel.getBookAndGenreFieldName();
+        const totalData = await booksModel.getAllData();
+        const generatedFilters = generateFilters(filters, fields);
 
-        const new_filters = {
-            search: generated_filters.search,
-            pagination: generated_filters.pagination,
-            sort: generated_filters.sort
+        const newFilters = {
+            search: generatedFilters.search,
+            pagination: generatedFilters.pagination,
+            sort: generatedFilters.sort
         };
 
-        const result = await books_model.get_data_custom(new_filters, total_data.length);
+        const result = await booksModel.getDataCustom(newFilters, totalData.length);
         
-        return my_response.response(res, "success", result, 200, "Ok!");
+        return myResponse.response(res, "success", result, 200, "Ok!");
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
-async function post_book(req,res) {
+async function postBook(req,res) {
     try {
         if (req.file) {
             // Joi validation
-            const field_to_patch = Object.keys(req.body);
-            await validate.validate_books(req.body, field_to_patch);
+            const fieldToPatch = Object.keys(req.body);
+            await validate.validateBooks(req.body, fieldToPatch);
 
             const data = req.body;
-            const check_book = await books_model.get_data_by_name(data.book_title);
+            const checkBook = await booksModel.getDataByName(data.title);
             
-            if (check_book.length < 1) {
-                data.book_image = `${config.image_url_path(req)}${req.file.filename}`;
-                const result = await books_model.add_data(data);
+            if (checkBook.length < 1) {
+                data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
+                const result = await booksModel.addData(data);
                 if (result.affectedRows > 0) {
-                    data.book_id = result.insertId;
-                    return my_response.response(res, "success", data, 201, "Created!");
+                    data.bookId = result.insertId;
+                    return myResponse.response(res, "success", data, 201, "Created!");
                 } else {
                     // delete new image when insert data is failed
-                    const my_request = { protocol: req.protocol, host: req.get('host') }
-                    delete_image.delete(my_request, req.file.filename);
+                    const myRequest = { protocol: req.protocol, host: req.get('host') }
+                    deleteImage.delete(myRequest, req.file.filename);
 
                     const message = `Add data failed`;
-                    return my_response.response(res, "failed", "", 409, message);
+                    return myResponse.response(res, "failed", "", 409, message);
                 }
             } else {
                 // delete new image when duplicated data
-                const my_request = { protocol: req.protocol, host: req.get('host') }
-                delete_image.delete(my_request, req.file.filename);
+                const myRequest = { protocol: req.protocol, host: req.get('host') }
+                deleteImage.delete(myRequest, req.file.filename);
                 
-                const message = `Duplicate data ${data.book_title}`;
-                return my_response.response(res, "failed", "", 409, message);
+                const message = `Duplicate data ${data.title}`;
+                return myResponse.response(res, "failed", "", 409, message);
             }
         } else {
             const message = `There is no image to upload`;
-            return my_response.response(res, "failed", "", 500, message);
+            return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);
         
         // delete image when error
-        const my_request = { protocol: req.protocol, host: req.get('host') }
-        delete_image.delete(my_request, req.file.filename);
+        const myRequest = { protocol: req.protocol, host: req.get('host') }
+        deleteImage.delete(myRequest, req.file.filename);
 
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
-async function patch_book(req,res) {
+async function patchBook(req,res) {
     try {
-        const field_to_patch = Object.keys(req.body);
-        const error = await validate.validate_books(req.body, field_to_patch);
+        const fieldToPatch = Object.keys(req.body);
+        const error = await validate.validateBooks(req.body, fieldToPatch);
 
         const id = req.params.id;
-        const old_data = await get_book_by_id(id);
-        if (old_data.length < 1) {
+        const oldData = await getBookById(id);
+        if (oldData.length < 1) {
             const message = `Data with id ${id} not found`;
-            return my_response.response(res, "failed", "", 404, message);
+            return myResponse.response(res, "failed", "", 404, message);
         }
 
         const body = req.body;
@@ -169,7 +169,7 @@ async function patch_book(req,res) {
         if (req.file) {
             data = {
                 ...body,
-                book_image: req.file.filename,
+                image: req.file.filename,
             };
         } else {
             data = {
@@ -177,141 +177,141 @@ async function patch_book(req,res) {
             };
         }
         
-        const result = await books_model.update_data(data, id);
+        const result = await booksModel.updateData(data, id);
 
         const newData = {
-            book_id: id,
+            bookId: id,
             ...data,
         };
 
         if (result.affectedRows > 0) {
             // delete old image
-            const my_request = { protocol: req.protocol, host: req.get('host') }
-            delete_image.delete(my_request, old_data[0].book_image);
-            return my_response.response(res, "success", newData, 200, "Updated!");
+            const myRequest = { protocol: req.protocol, host: req.get('host') }
+            deleteImage.delete(myRequest, oldData[0].image);
+            return myResponse.response(res, "success", newData, 200, "Updated!");
         } else {
             // delete new image when update data is failed
-            const my_request = { protocol: req.protocol, host: req.get('host') }
-            delete_image.delete(my_request, req.file.filename);
+            const myRequest = { protocol: req.protocol, host: req.get('host') }
+            deleteImage.delete(myRequest, req.file.filename);
 
-            const message = `Update data ${data.book_title} failed `;
-            return my_response.response(res, "failed", "", 500, message);
+            const message = `Update data ${data.title} failed `;
+            return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);
 
         // delete image when error
-        const my_request = { protocol: req.protocol, host: req.get('host') }
-        delete_image.delete(my_request, req.file.filename);
+        const myRequest = { protocol: req.protocol, host: req.get('host') }
+        deleteImage.delete(myRequest, req.file.filename);
 
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
-async function delete_book(req,res) {
+async function deleteBook(req,res) {
     try {
         const id = req.params.id;
-        const old_data = await get_book_by_id(id);
-        if(old_data.length < 1) {
+        const oldData = await getBookById(id);
+        if(oldData.length < 1) {
             const message = `Data with id ${id} not found`;
-            return my_response.response(res, "failed", "", 404, message);
+            return myResponse.response(res, "failed", "", 404, message);
         }
-        const result = await books_model.delete_data(id);
+        const result = await booksModel.deleteData(id);
         if (result.affectedRows > 0){
-            const data = {book_id: id}
-            const my_request = { protocol: req.protocol, host: req.get('host') }
-            delete_image.delete(my_request, old_data[0].book_image);
-            return my_response.response(res, "success", data, 200, "Deleted!");
+            const data = {bookId: id}
+            const myRequest = { protocol: req.protocol, host: req.get('host') }
+            deleteImage.delete(myRequest, oldData[0].image);
+            return myResponse.response(res, "success", data, 200, "Deleted!");
         } else {
             const message = `Internal Server Error`;
-            return my_response.response(res, "failed", "", 500, message);
+            return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
 /**
  * Another CRUD
  */
-async function borrow_book(req, res) {
+async function borrowBook(req, res) {
     try {
         const id = req.params.id;
-        const old_data = await get_book_by_id(id);
+        const oldData = await getBookById(id);
 
-        if (old_data.length < 1) {
+        if (oldData.length < 1) {
             const message = `Data with id ${id} not found`;
-            return my_response.response(res, "failed", "", 404, message);
+            return myResponse.response(res, "failed", "", 404, message);
         }
         
-        if (old_data[0].book_status == 1) {
-            const message = `Book with id ${old_data[0].book_id} has been borrowed`;
-            return my_response.response(res, "failed", "", 409, message);
+        if (oldData[0].bookStatus == 1) {
+            const message = `Book with id ${oldData[0].bookId} has been borrowed`;
+            return myResponse.response(res, "failed", "", 409, message);
         }
 
         const data_to_update = {
-            book_status: 1
+            bookStatus: 1
         };
         
-        const result = await books_model.update_data(data_to_update, id);
+        const result = await booksModel.updateData(data_to_update, id);
 
         if (result.affectedRows > 0) {
             const new_data = {
-                ...old_data[0]
+                ...oldData[0]
             };
-            return my_response.response(res, "success", new_data, 200, "Borrowed!");
+            return myResponse.response(res, "success", new_data, 200, "Borrowed!");
         } else {
-            const message = `Update data ${old_data[0].book_title} failed `;
-            return my_response.response(res, "failed", "", 500, message);
+            const message = `Update data ${oldData[0].title} failed `;
+            return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
-async function return_book(req, res) {
+async function returnBook(req, res) {
     try {
         const id = req.params.id;
-        const old_data = await get_book_by_id(id);
+        const oldData = await getBookById(id);
 
-        if (old_data.length < 1) {
+        if (oldData.length < 1) {
             const message = `Data with id ${id} not found`;
-            return my_response.response(res, "failed", "", 404, message);
+            return myResponse.response(res, "failed", "", 404, message);
         }
 
-        if (old_data[0].book_status == 0) {
-            const message = `Book with id ${old_data[0].book_id} has been returned`;
-            return my_response.response(res, "failed", "", 409, message);
+        if (oldData[0].bookStatus == 0) {
+            const message = `Book with id ${oldData[0].bookId} has been returned`;
+            return myResponse.response(res, "failed", "", 409, message);
         }
 
         const data_to_update = {
-            book_status: 0
+            bookStatus: 0
         };
 
-        const result = await books_model.update_data(data_to_update, id);
+        const result = await booksModel.updateData(data_to_update, id);
 
         if (result.affectedRows > 0) {
             const data = {
-                book_id: old_data[0].book_id
+                bookId: oldData[0].bookId
             };
             
-            return my_response.response(res, "success", data, 200, "Returned!");
+            return myResponse.response(res, "success", data, 200, "Returned!");
         } else {
-            const message = `Update data ${old_data[0].book_title} failed `;
-            return my_response.response(res, "failed", "", 500, message);
+            const message = `Update data ${oldData[0].title} failed `;
+            return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
 module.exports = {
-    post_book,
-    patch_book,
-    delete_book,
-    get_books,
-    borrow_book,
-    return_book
+    postBook,
+    patchBook,
+    deleteBook,
+    getBooks,
+    borrowBook,
+    returnBook
 }

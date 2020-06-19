@@ -7,23 +7,23 @@ const express = require('express');
 const router = express.Router();
 
 // import middlewares
-const auth_middleware = require('../middlewares/mdl_auth');
-const validation_middleware = require('../middlewares/mdl_validation');
+const authMiddleware = require('../middlewares/mdl_auth');
+const validationMiddleware = require('../middlewares/mdl_validation');
 
 /**
  * Load All Routes
  */
-const books_router = require('./r_books');
-const book_genres_router = require('./r_book_genres');
-const auth_router = require('./r_auth');
-const users_router = require('./r_users');
+const booksRouter = require('./r_books');
+const bookGenresRouter = require('./r_bookGenres');
+const authRouter = require('./r_auth');
+const usersRouter = require('./r_users');
 
 /**
  * Fire the router
  */
-router.use('/books', validation_middleware.xss_escape , auth_middleware.verify_jwt_token, books_router);
-router.use('/book_genres', validation_middleware.xss_escape, auth_middleware.verify_jwt_token, book_genres_router);
-router.use('/auth', validation_middleware.xss_escape, auth_router);
-router.use("/users", validation_middleware.xss_escape, auth_middleware.verify_jwt_token, users_router);
+router.use('/books', validationMiddleware.xssEscape , authMiddleware.verifyJwtToken, booksRouter);
+router.use('/books/genres', validationMiddleware.xssEscape, authMiddleware.verifyJwtToken, bookGenresRouter);
+router.use('/auth', validationMiddleware.xssEscape, authRouter);
+router.use("/users", validationMiddleware.xssEscape, authMiddleware.verifyJwtToken, usersRouter);
 
 module.exports = router;

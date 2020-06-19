@@ -3,40 +3,35 @@
  * .
  * Load Model
  */
-const users_model = require("../models/m_users");
+const usersModel = require("../models/m_users");
 
 /**
  * custom response helper
  * .
  * merapihkan output
- * response: function(res, status_execution, data, status_code, message)
+ * response: function(res, statusExecution, data, statusCode, message)
  */
-const my_response = require("../helpers/my_response");
-
-// import joi
-const validate = require('../helpers/joi_schema');
+const myResponse = require("../helpers/myResponse");
 
 // import custom error message
-const error_message = require("../helpers/my_error_message");
+const errorMessage = require("../helpers/myErrorMessage");
 
 /**
  * CRUD
  */
-async function get_users(req, res) {
+async function getUsers(req, res) {
     try {
-        const result = await users_model.get_all_data();
+        const result = await usersModel.getAllData();
         for (key in result) {
-            delete result[key].user_password;
+            delete result[key].password;
         }
-        return my_response.response(res, "success", result, 200, "Ok!")
+        return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
-        return my_response.response(res, "failed", "", 500, error_message.my_error_message(error, {}));
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
     }
 }
 
-
-
 module.exports = {
-    get_users
+    getUsers
 }

@@ -8,15 +8,15 @@ const conn = require('../helpers/mysql');
 /**
  * Custom Function
  */
-function generate_like(filters = {}) {
+function generateLike(filters = {}) {
     let result = "";
     const length = Object.keys(filters).length - 1;
     let i = 0;
     for (key in filters) {
         const filter = "'%" + filters[key] + "%'";
-        let field = "book_" + key;
+        let field = "" + key;
         if (key == "genre") {
-            field = "book_" + key + "_name";
+            field = "" + key + "_name";
         }
         result += (i == length) ? field + " LIKE " + filter : field + " LIKE " + filter + " OR ";
         i++;
@@ -25,7 +25,7 @@ function generate_like(filters = {}) {
 }
 
 module.exports = {
-    get_field_name: function() {
+    getFieldName: function() {
         return new Promise((resolve, reject) => {
             const sqlQuery = `DESCRIBE books`;
             conn.query(sqlQuery, function (error, result) {
@@ -41,13 +41,13 @@ module.exports = {
         })
     },
 
-    get_data_custom: function (filters, total_data) {
+    getDataCustom: function (filters, totalData) {
         return new Promise((resolve, reject) => {
             let sqlQuery = "SELECT * FROM `v_book_and_genre` ";
             
             // search
             if (Object.keys(filters.search).length > 0) {
-                sqlQuery += " WHERE " + generate_like(filters.search);
+                sqlQuery += " WHERE " + generateLike(filters.search);
             }
 
             // sort
@@ -61,8 +61,8 @@ module.exports = {
                         fields[field.Field] = field.Field;
                     });
                     
-                    if (`book_${filters.sort.sort}` in fields) {
-                        sqlQuery += " ORDER BY book_" + filters.sort.sort + " ASC";
+                    if (`${filters.sort.sort}` in fields) {
+                        sqlQuery += " ORDER BY " + filters.sort.sort + " ASC";
                     }
                 })
                 
@@ -85,7 +85,7 @@ module.exports = {
                 let first_data = (data_per_page * active_page) - data_per_page;
                 sqlQuery += ("page" in filters.pagination) ? " LIMIT " + first_data + ", " + data_per_page + " " : "";
                 
-                var total_page = Math.ceil(total_data / data_per_page);
+                var total_page = Math.ceil(totalData / data_per_page);
             }
             
             conn.query(sqlQuery, filters.search, function (error, result) {
@@ -102,7 +102,7 @@ module.exports = {
         })
     },
 
-    get_all_data: function() {
+    getAllData: function() {
         return new Promise((resolve, reject) => {
             const sqlQuery = "SELECT * FROM books";
             conn.query(sqlQuery, function (error, result) {
@@ -114,7 +114,7 @@ module.exports = {
         })
     },
 
-    get_data_by_id: function (id) {
+    getDataById: function (id) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "SELECT * FROM books WHERE book_id = ?";
             conn.query(sqlQuery, id, function (error, result) {
@@ -126,16 +126,16 @@ module.exports = {
         })
     },
     
-    get_data_by_filter: function (filter) {
+    getDataByFilter: function (filter) {
         return new Promise((resolve, reject) => {
             const sqlQuery = 
             `SELECT 
             books.*, 
-            book_genres.book_genre_name 
+            genres.name 
             FROM 
-            books INNER JOIN book_genres 
+            books INNER JOIN genres 
             WHERE 
-            books.book_genre_id=book_genres.book_genre_id 
+            books.genre_id=genres.genre_id 
             AND 
             (` + filter + `)`;
 
@@ -148,9 +148,9 @@ module.exports = {
         })
     },
 
-    get_data_by_name: function (data) {
+    getDataByName: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM books WHERE book_title = ?";
+            const sqlQuery = "SELECT * FROM books WHERE title = ?";
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
                     reject(error);
@@ -160,16 +160,16 @@ module.exports = {
         })
     },
 
-    get_data_by_sort: function (sort) {
+    getDataBySort: function (sort) {
         return new Promise((resolve, reject) => {
             const sqlQuery =
                 `SELECT 
             books.*, 
-            book_genres.book_genre_name 
+            genres.name 
             FROM 
-            books INNER JOIN book_genres 
+            books INNER JOIN genres 
             WHERE 
-            books.book_genre_id=book_genres.book_genre_id ORDER BY book_` + sort.sort + ` ASC`;
+            books.genre_id=genres.genre_id ORDER BY ` + sort.sort + ` ASC`;
             
             // console.log(sqlQuery);
             
@@ -182,7 +182,7 @@ module.exports = {
         })
     },
 
-    add_data: function(data) {
+    addData: function(data) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "INSERT INTO books SET ?";
             conn.query(sqlQuery, data, function (error, result) {
@@ -194,7 +194,7 @@ module.exports = {
         })
     },
 
-    update_data: function(data, id) {
+    updateData: function(data, id) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "UPDATE books SET ? WHERE book_id = ?";
             conn.query(sqlQuery, [data, id], function (error, result) {
@@ -206,7 +206,7 @@ module.exports = {
         })
     },
 
-    delete_data: function(id) {
+    deleteData: function(id) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "DELETE FROM books WHERE book_id = ?";
             conn.query(sqlQuery, id, function (error, result) {

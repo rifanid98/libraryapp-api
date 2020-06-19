@@ -10,7 +10,7 @@ const router = express.Router();
 const upload = require('../helpers/upload');
 
 // import middlewares
-const auth_middleware = require('../middlewares/mdl_auth');
+const authMiddleware = require('../middlewares/mdl_auth');
 
 /**
  * Controllers

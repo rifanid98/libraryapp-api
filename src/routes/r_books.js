@@ -10,39 +10,39 @@ const router = express.Router();
 const upload = require('../helpers/upload');
 
 // import middlewares
-const auth_middleware = require('../middlewares/mdl_auth');
+const authMiddleware = require('../middlewares/mdl_auth');
 
 /**
  * Controllers
  */
 // load the controller
-const books_controller = require('../controllers/c_books');
+const booksController = require('../controllers/c_books');
 
 // Get All Books
-router.get('/', auth_middleware.check_role([3, 2, 1]), books_controller.get_books);
+router.get('/', authMiddleware.checkRole([3, 2, 1]), booksController.getBooks);
 // Post a Book
-router.post('/add', auth_middleware.check_role([2, 1]), upload.single('book_image'), books_controller.post_book);
+router.post('/add', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.postBook);
 // Return a Book
-router.patch('/return/:id', auth_middleware.check_role([3, 2, 1]), upload.single('book_image'), books_controller.return_book);
+router.patch('/return/:id', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
 // Borrow a Book
-router.patch('/borrow/:id', auth_middleware.check_role([3, 2, 1]), upload.single('book_image'), books_controller.borrow_book);
+router.patch('/borrow/:id', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
 // Patch a Book
-router.patch('/update/:id', auth_middleware.check_role([2, 1]), upload.single('book_image'), books_controller.patch_book);
+router.patch('/update/:id', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.patchBook);
 // Delete a Book
-router.delete('/delete/:id', auth_middleware.check_role([1]), books_controller.delete_book);
+router.delete('/delete/:id', authMiddleware.checkRole([1]), booksController.deleteBook);
 
 // // Get All Books
-// router.get('/', auth_middleware.check_role([3, 2, 1]), books_controller.get_books);
+// router.get('/', authMiddleware.checkRole([3, 2, 1]), booksController.getBooks);
 // // Post a Book
-// router.post('/', auth_middleware.check_role([2, 1]), upload.single('book_image'), books_controller.post_book);
+// router.post('/', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.postBook);
 // // Patch a Book
-// router.patch('/:id', auth_middleware.check_role([2, 1]), upload.single('book_image'), books_controller.patch_book);
+// router.patch('/:id', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.patchBook);
 // // Delete a Book
-// router.delete('/:id', auth_middleware.check_role([1]), books_controller.delete_book);
+// router.delete('/:id', authMiddleware.checkRole([1]), booksController.deleteBook);
 
 // // Return a Book
-// router.patch('/:id/return', auth_middleware.check_role([3, 2, 1]), upload.single('book_image'), books_controller.return_book);
+// router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
 // // Borrow a Book
-// router.patch('/:id/borrow', auth_middleware.check_role([3, 2, 1]), upload.single('book_image'), books_controller.borrow_book);
+// router.patch('/:id/borrow', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
 
 module.exports = router;

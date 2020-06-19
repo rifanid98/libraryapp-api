@@ -14,8 +14,8 @@ Untuk mengakses api yang disediakan, harus memiliki akses dengan login terlebih 
 
 | Name          | Type          | Required |
 | ------------- | ------------- | -------- |
-| user_name     | string        | true     | 
-| user_password | string        | true     |
+| userName     | string        | true     | 
+| userPassword | string        | true     |
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
@@ -27,8 +27,8 @@ Mendukung application/json, urlencoded dan form-data format
 
 | Name          | Type          | Required | 
 | ------------- | ------------- | -------- | 
-| user_name     | string        | true     | 
-| user_password | string        | true     |
+| userName     | string        | true     | 
+| userPassword | string        | true     |
 | user_role     | number        | true     |
 
 ### Body
@@ -105,10 +105,10 @@ Menambahkan buku
 | ---------------- | ------------------- | -------- | 
 | book_title       | string              | true     |
 | book_description | string              | true     |
-| book_image       | file [jpg/jpeg]     | true     |
+| bookImage       | file [jpg/jpeg]     | true     |
 | book_author      | string              | true     |
-| book_status      | number              | true     |
-| book_genre_id    | number [foreign key]| true     |
+| bookStatus      | number              | true     |
+| bookGenreId    | number [foreign key]| true     |
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
@@ -128,10 +128,10 @@ Contoh : http://localhost:3000/libraryapp-api/books/20
 | ---------------- | ------------------- | -------- | 
 | book_title       | string              | true     |
 | book_description | string              | true     |
-| book_image       | file [jpg/jpeg]     | true     |
+| bookImage       | file [jpg/jpeg]     | true     |
 | book_author      | string              | true     |
-| book_status      | number              | true     |
-| book_genre_id    | number [foreign key]| true     |
+| bookStatus      | number              | true     |
+| bookGenreId    | number [foreign key]| true     |
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
@@ -168,19 +168,19 @@ Contoh : http://localhost:3000/libraryapp-api/books/return/20
 Mengakses genre buku
 
 **URL API**
-> http://localhost:3000/libraryapp-api/book_genres [GET]<br>
-> http://localhost:3000/libraryapp-api/book_genres [POST]<br>
-> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]<br>
-> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
+> http://localhost:3000/libraryapp-api/bookGenres [GET]<br>
+> http://localhost:3000/libraryapp-api/bookGenres [POST]<br>
+> http://localhost:3000/libraryapp-api/bookGenres/:id [PATCH]<br>
+> http://localhost:3000/libraryapp-api/bookGenres/:id [DELETE]
 
 ### 1. GET Book Genres
-> http://localhost:3000/libraryapp-api/book_genres [GET]
+> http://localhost:3000/libraryapp-api/bookGenres [GET]
 
 Note: 
 Mendapatkan seluruh genre
 
 ### 2. POST Book Genre
-> http://localhost:3000/libraryapp-api/book_genres [POST]
+> http://localhost:3000/libraryapp-api/bookGenres [POST]
 
 Note: 
 Menambahkan seluruh genre
@@ -192,13 +192,13 @@ Menambahkan seluruh genre
 | book_genre_name  | string   | true     |
 
 ### 3. PATCH Book Genre
-> http://localhost:3000/libraryapp-api/book_genres/:id [PATCH]
+> http://localhost:3000/libraryapp-api/bookGenres/:id [PATCH]
 
 Note: 
 - Mengupdate buku
 - :id merupakan ID Buku
 
-Contoh : http://localhost:3000/libraryapp-api/book_genres/3
+Contoh : http://localhost:3000/libraryapp-api/bookGenres/3
 
 ### Field
 
@@ -210,10 +210,10 @@ Contoh : http://localhost:3000/libraryapp-api/book_genres/3
 Mendukung application/json, urlencoded dan form-data format
 
 ### 4. DELETE Book Genre
-> http://localhost:3000/libraryapp-api/book_genres/:id [DELETE]
+> http://localhost:3000/libraryapp-api/bookGenres/:id [DELETE]
 
 Note: 
 - Menghapus buku
 - :id merupakan ID Buku
 
-Contoh : http://localhost:3000/libraryapp-api/book_genres/3
+Contoh : http://localhost:3000/libraryapp-api/bookGenres/3
