@@ -40,15 +40,21 @@ async function postBookGenre(req, res) {
         const error = await validate.validateBookGenres(req.body);
 
         const data = req.body;
-        let result = await bookGenresModel.getDataByName(data);
+        const checkGenre = await bookGenresModel.getDataByName(data);
         
-        if (result.length < 1) {
-            result = await bookGenresModel.addData(data);
-            return myResponse.response(res, "success", data, 201, "Created!")
-        } else {
+        if (checkGenre.length > 0) {
             const message = `Duplicate data ${data.name}`;
             return myResponse.response(res, "failed", "", 409, message);
         }
+        
+        const result = await bookGenresModel.addData(data);
+        if (result.affectedRows > 0) {
+            return myResponse.response(res, "success", data, 201, "Created!")
+        } else {
+            const message = `Add data failed`;
+            return myResponse.response(res, "failed", "", 409, message);
+        }
+
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
@@ -62,6 +68,13 @@ async function patchBookGenre(req, res) {
 
         const data = req.body;
         const id = req.params.id;
+        let checkGenre = await bookGenresModel.getDataByName(data.name);
+        
+        if (checkGenre.length > 0) {
+            const message = `Duplicate data ${data.name}`;
+            return myResponse.response(res, "failed", "", 409, message);   
+        }
+
         const result = await bookGenresModel.updateData(data, id);
         
         if (result.affectedRows > 0){
