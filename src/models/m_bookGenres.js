@@ -21,7 +21,7 @@ module.exports = {
 
     getDataByName: function (data) {
         return new Promise((resolve, reject) => {
-            const sqlQuery = "SELECT * FROM genres WHERE ?";
+            const sqlQuery = "SELECT * FROM genres WHERE name = ? ";
             
             conn.query(sqlQuery, data, function (error, result) {
                 if (error) {
