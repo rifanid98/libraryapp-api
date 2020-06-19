@@ -32,6 +32,24 @@ async function getUsers(req, res) {
     }
 }
 
+async function deleteUser(req, res) {
+    try {
+        const id = req.params.id;
+        const result = await usersModel.deleteDataById(id);
+
+        if (result.affectedRows > 0) {
+            return myResponse.response(res, "success", { user_id: id }, 200, "Deleted!")
+        } else {
+            const message = `Data with id ${id} is not found`;
+            return myResponse.response(res, "failed", "", 404, message);
+        }
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
 module.exports = {
+    deleteUser,
     getUsers
 }

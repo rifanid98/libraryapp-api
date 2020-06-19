@@ -16,9 +16,10 @@ const authMiddleware = require('../middlewares/mdl_auth');
  * Controllers
  */
 // load the controller
-const users_controller = require('../controllers/c_users');
+const usersController = require('../controllers/c_users');
 
 // register user
-router.get('/', authMiddleware.checkRole([3, 2, 1]), users_controller.getUsers);
+router.get('/', authMiddleware.checkRole([3, 2, 1]), usersController.getUsers);
+router.delete('/:id', authMiddleware.checkRole([3, 2, 1]), usersController.deleteUser);
 
 module.exports = router;

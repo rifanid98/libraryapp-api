@@ -42,7 +42,7 @@ module.exports = {
         })
     },
 
-    deleteData: function (id) {
+    deleteDataById: function (id) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "DELETE FROM users WHERE user_id = ?";
             conn.query(sqlQuery, id, function (error, result) {
