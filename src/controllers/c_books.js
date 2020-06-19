@@ -48,6 +48,11 @@ function generateFilters(filters = {}, fields = {}) {
                     search[filter] = filters[filter];
                 }
             }
+            if (filter == "genre" && "name" == fieldName) {
+                if (filter in search == false) {
+                    search["name"] = filters[filter];
+                }
+            }
         }
     }
 
@@ -89,7 +94,7 @@ async function getBooks(req,res) {
         const fields = await dbViewsModel.getBookAndGenreFieldName();
         const totalData = await booksModel.getAllData();
         const generatedFilters = generateFilters(filters, fields);
-
+        
         const newFilters = {
             search: generatedFilters.search,
             pagination: generatedFilters.pagination,
@@ -113,30 +118,31 @@ async function postBook(req,res) {
             await validate.validateBooks(req.body, fieldToPatch);
 
             const data = req.body;
-            const checkBook = await booksModel.getDataByName(data.title);
+            const checkBook = await booksModel.getDataByTitle(data.title);
             
-            if (checkBook.length < 1) {
-                data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
-                const result = await booksModel.addData(data);
-                if (result.affectedRows > 0) {
-                    data.bookId = result.insertId;
-                    return myResponse.response(res, "success", data, 201, "Created!");
-                } else {
-                    // delete new image when insert data is failed
-                    const myRequest = { protocol: req.protocol, host: req.get('host') }
-                    deleteImage.delete(myRequest, req.file.filename);
-
-                    const message = `Add data failed`;
-                    return myResponse.response(res, "failed", "", 409, message);
-                }
-            } else {
+            if (checkBook.length > 0) {
                 // delete new image when duplicated data
                 const myRequest = { protocol: req.protocol, host: req.get('host') }
                 deleteImage.delete(myRequest, req.file.filename);
-                
+
                 const message = `Duplicate data ${data.title}`;
+                return myResponse.response(res, "failed", "", 409, message);   
+            }
+
+            data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
+            const result = await booksModel.addData(data);
+            if (result.affectedRows > 0) {
+                data.bookId = result.insertId;
+                return myResponse.response(res, "success", data, 201, "Created!");
+            } else {
+                // delete new image when insert data is failed
+                const myRequest = { protocol: req.protocol, host: req.get('host') }
+                deleteImage.delete(myRequest, req.file.filename);
+
+                const message = `Add data failed`;
                 return myResponse.response(res, "failed", "", 409, message);
             }
+
         } else {
             const message = `There is no image to upload`;
             return myResponse.response(res, "failed", "", 500, message);
@@ -154,47 +160,63 @@ async function postBook(req,res) {
 
 async function patchBook(req,res) {
     try {
-        const fieldToPatch = Object.keys(req.body);
-        const error = await validate.validateBooks(req.body, fieldToPatch);
-
-        const id = req.params.id;
-        const oldData = await getBookById(id);
-        if (oldData.length < 1) {
-            const message = `Data with id ${id} not found`;
-            return myResponse.response(res, "failed", "", 404, message);
-        }
-
-        const body = req.body;
-        let data = {};
         if (req.file) {
-            data = {
-                ...body,
-                image: req.file.filename,
+            const fieldToPatch = Object.keys(req.body);
+            const error = await validate.validateBooks(req.body, fieldToPatch);
+
+            const id = req.params.id;
+            const oldData = await getBookById(id);
+            if (oldData.length < 1) {
+                const message = `Data with id ${id} not found`;
+                return myResponse.response(res, "failed", "", 404, message);
+            }
+            
+            const body = req.body;
+            const checkBook = await booksModel.getDataByTitle(body.title);
+            
+            if(checkBook.length > 0) {
+                // delete new image when duplicated data
+                const myRequest = { protocol: req.protocol, host: req.get('host') }
+                deleteImage.delete(myRequest, req.file.filename);
+
+                const message = `Duplicate data ${body.title}`;
+                return myResponse.response(res, "failed", "", 409, message);   
+            }
+
+            let data = {};
+            if (req.file) {
+                data = {
+                    ...body,
+                    image: req.file.filename,
+                };
+            } else {
+                data = {
+                    ...body
+                };
+            }
+
+            const result = await booksModel.updateData(data, id);
+
+            const newData = {
+                bookId: id,
+                ...data,
             };
+
+            if (result.affectedRows > 0) {
+                // delete old image
+                const myRequest = { protocol: req.protocol, host: req.get('host') }
+                deleteImage.delete(myRequest, oldData[0].image);
+                return myResponse.response(res, "success", newData, 200, "Updated!");
+            } else {
+                // delete new image when update data is failed
+                const myRequest = { protocol: req.protocol, host: req.get('host') }
+                deleteImage.delete(myRequest, req.file.filename);
+
+                const message = `Update data ${data.title} failed `;
+                return myResponse.response(res, "failed", "", 500, message);
+            }
         } else {
-            data = {
-                ...body
-            };
-        }
-        
-        const result = await booksModel.updateData(data, id);
-
-        const newData = {
-            bookId: id,
-            ...data,
-        };
-
-        if (result.affectedRows > 0) {
-            // delete old image
-            const myRequest = { protocol: req.protocol, host: req.get('host') }
-            deleteImage.delete(myRequest, oldData[0].image);
-            return myResponse.response(res, "success", newData, 200, "Updated!");
-        } else {
-            // delete new image when update data is failed
-            const myRequest = { protocol: req.protocol, host: req.get('host') }
-            deleteImage.delete(myRequest, req.file.filename);
-
-            const message = `Update data ${data.title} failed `;
+            const message = `There is no image to upload`;
             return myResponse.response(res, "failed", "", 500, message);
         }
     } catch (error) {
