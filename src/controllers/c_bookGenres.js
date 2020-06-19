@@ -96,7 +96,7 @@ async function deleteBookGenre(req, res) {
         const result = await bookGenresModel.deleteData(id);
         
         const data = {
-            bookGenreId: id
+            genre_id: id
         }
         if (result.affectedRows >0) {
             return myResponse.response(res, "success", data, 200, "Deleted!")
