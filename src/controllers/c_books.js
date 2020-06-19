@@ -102,6 +102,12 @@ async function getBooks(req,res) {
         };
 
         const result = await booksModel.getDataCustom(newFilters, totalData.length);
+        result.nextPage = req.protocol + '://' + req.get('host') + req.originalUrl;
+        result.nextPage = result.nextPage.replace(`page=${req.query.page}`, `page=${parseInt(req.query.page)+1}`)
+        result.previousPage = req.protocol + '://' + req.get('host') + req.originalUrl;
+        if (req.query.page > 1) {
+            result.previousPage = result.previousPage.replace(`page=${req.query.page}`, `page=${parseInt(req.query.page)-1}`)
+        }
         
         return myResponse.response(res, "success", result, 200, "Ok!");
     } catch (error) {
@@ -132,7 +138,7 @@ async function postBook(req,res) {
             data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
             const result = await booksModel.addData(data);
             if (result.affectedRows > 0) {
-                data.bookId = result.insertId;
+                data.book_id = result.insertId;
                 return myResponse.response(res, "success", data, 201, "Created!");
             } else {
                 // delete new image when insert data is failed
@@ -198,7 +204,7 @@ async function patchBook(req,res) {
             const result = await booksModel.updateData(data, id);
 
             const newData = {
-                bookId: id,
+                book_id: id,
                 ...data,
             };
 
@@ -240,7 +246,7 @@ async function deleteBook(req,res) {
         }
         const result = await booksModel.deleteData(id);
         if (result.affectedRows > 0){
-            const data = {bookId: id}
+            const data = {book_id: id}
             const myRequest = { protocol: req.protocol, host: req.get('host') }
             deleteImage.delete(myRequest, oldData[0].image);
             return myResponse.response(res, "success", data, 200, "Deleted!");
@@ -268,7 +274,7 @@ async function borrowBook(req, res) {
         }
         
         if (oldData[0].bookStatus == 1) {
-            const message = `Book with id ${oldData[0].bookId} has been borrowed`;
+            const message = `Book with id ${oldData[0].book_id} has been borrowed`;
             return myResponse.response(res, "failed", "", 409, message);
         }
 
@@ -303,7 +309,7 @@ async function returnBook(req, res) {
         }
 
         if (oldData[0].bookStatus == 0) {
-            const message = `Book with id ${oldData[0].bookId} has been returned`;
+            const message = `Book with id ${oldData[0].book_id} has been returned`;
             return myResponse.response(res, "failed", "", 409, message);
         }
 
@@ -315,7 +321,7 @@ async function returnBook(req, res) {
 
         if (result.affectedRows > 0) {
             const data = {
-                bookId: oldData[0].bookId
+                book_id: oldData[0].book_id
             };
             
             return myResponse.response(res, "success", data, 200, "Returned!");
