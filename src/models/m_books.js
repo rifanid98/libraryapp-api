@@ -73,23 +73,23 @@ module.exports = {
         const totalData = await this.getTotalDataCustom(sqlQuery, filters.search);
         
         // pagination
-        var data_per_page = 5;
-        var active_page = 1
-        var total_page = 0;
+        var dataPerPage = 5;
+        var activePage = 1
+        var totalPage = 0;
 
         if (Object.keys(filters.pagination).length == 2) {
 
             if (filters.pagination.limit) {
-                var data_per_page = filters.pagination.limit;
+                var dataPerPage = filters.pagination.limit;
             }
             if (filters.pagination.page) {
-                var active_page = filters.pagination.page;
+                var activePage = filters.pagination.page;
             }
 
-            let first_data = (data_per_page * active_page) - data_per_page;
-            sqlQuery += ("page" in filters.pagination) ? " LIMIT " + first_data + ", " + data_per_page + " " : "";
+            let first_data = (dataPerPage * activePage) - dataPerPage;
+            sqlQuery += ("page" in filters.pagination) ? " LIMIT " + first_data + ", " + dataPerPage + " " : "";
 
-            var total_page = Math.ceil(totalData / data_per_page);
+            var totalPage = Math.ceil(totalData / dataPerPage);
         }
         
         return new Promise((resolve, reject) => {
@@ -99,7 +99,7 @@ module.exports = {
                 }
 
                 const new_result = {
-                    total_page,
+                    totalPage,
                     result
                 }
 
