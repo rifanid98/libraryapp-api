@@ -108,7 +108,7 @@ Menambahkan buku
 | bookImage       | file [jpg/jpeg]     | true     |
 | book_author      | string              | true     |
 | bookStatus      | number              | true     |
-| bookGenreId    | number [foreign key]| true     |
+| genre_id    | number [foreign key]| true     |
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
@@ -131,7 +131,7 @@ Contoh : http://localhost:3000/libraryapp-api/books/20
 | bookImage       | file [jpg/jpeg]     | true     |
 | book_author      | string              | true     |
 | bookStatus      | number              | true     |
-| bookGenreId    | number [foreign key]| true     |
+| genre_id    | number [foreign key]| true     |
 
 ### Body
 Mendukung application/json, urlencoded dan form-data format
