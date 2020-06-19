@@ -63,8 +63,6 @@ module.exports = {
             const error = await validate.validateLogin(data);
 
             const result = await authModel.login(data.username);
-            console.log(result);
-            
             if (result.length > 0) {
                 if (bcrypt.compareSync(data.password, result[0].password)) {
                     delete result[0].password;
