@@ -21,28 +21,15 @@ const booksController = require('../controllers/c_books');
 // Get All Books
 router.get('/', authMiddleware.checkRole([3, 2, 1]), booksController.getBooks);
 // Post a Book
-router.post('/add', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.postBook);
-// Return a Book
-router.patch('/return/:id', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
-// Borrow a Book
-router.patch('/borrow/:id', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
+router.post('/', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.postBook);
 // Patch a Book
-router.patch('/update/:id', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.patchBook);
+router.patch('/:id', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.patchBook);
 // Delete a Book
-router.delete('/delete/:id', authMiddleware.checkRole([1]), booksController.deleteBook);
+router.delete('/:id', authMiddleware.checkRole([1]), booksController.deleteBook);
 
-// // Get All Books
-// router.get('/', authMiddleware.checkRole([3, 2, 1]), booksController.getBooks);
-// // Post a Book
-// router.post('/', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.postBook);
-// // Patch a Book
-// router.patch('/:id', authMiddleware.checkRole([2, 1]), upload.single('image'), booksController.patchBook);
-// // Delete a Book
-// router.delete('/:id', authMiddleware.checkRole([1]), booksController.deleteBook);
-
-// // Return a Book
-// router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
-// // Borrow a Book
-// router.patch('/:id/borrow', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
+// Return a Book
+router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
+// Borrow a Book
+router.patch('/:id/borrow', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
 
 module.exports = router;
