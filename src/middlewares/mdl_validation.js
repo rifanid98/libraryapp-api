@@ -14,6 +14,8 @@ module.exports = {
         for (key in req.params) {
             req.params[key] = req.params[key].escape();
         }
+        // console.log(req.query);
+        
         next();
     }
 }

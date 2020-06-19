@@ -138,7 +138,7 @@ async function post_book(req,res) {
                 return my_response.response(res, "failed", "", 409, message);
             }
         } else {
-            const message = `There is no file to upload`;
+            const message = `There is no image to upload`;
             return my_response.response(res, "failed", "", 500, message);
         }
     } catch (error) {
@@ -154,45 +154,48 @@ async function post_book(req,res) {
 
 async function patch_book(req,res) {
     try {
+        const field_to_patch = Object.keys(req.body);
+        const error = await validate.validate_books(req.body, field_to_patch);
+
+        const id = req.params.id;
+        const old_data = await get_book_by_id(id);
+        if (old_data.length < 1) {
+            const message = `Data with id ${id} not found`;
+            return my_response.response(res, "failed", "", 404, message);
+        }
+
+        const body = req.body;
+        let data = {};
         if (req.file) {
-            const field_to_patch = Object.keys(req.body);
-            const error = await validate.validate_books(req.body, field_to_patch);
-
-            const id = req.params.id;
-            const old_data = await get_book_by_id(id);
-            if (old_data.length < 1) {
-                const message = `Data with id ${id} not found`;
-                return my_response.response(res, "failed", "", 404, message);
-            }
-            
-            const body = req.body;
-            const data = {
-            ...body,
-            book_image: req.file.filename,
+            data = {
+                ...body,
+                book_image: req.file.filename,
             };
-            const result = await books_model.update_data(data, id);
+        } else {
+            data = {
+                ...body
+            };
+        }
+        
+        const result = await books_model.update_data(data, id);
 
-            const newData = {
+        const newData = {
             book_id: id,
             ...data,
-            };
+        };
 
-            if (result.affectedRows > 0) {
-                // delete old image
-                const my_request = { protocol: req.protocol, host: req.get('host') }
-                delete_image.delete(my_request, old_data[0].book_image);
-                return my_response.response(res, "success", newData, 200, "Updated!");
-            } else {
-                // delete new image when update data is failed
-                const my_request = { protocol: req.protocol, host: req.get('host') }
-                delete_image.delete(my_request, req.file.filename);
-
-                const message = `Update data ${data.book_title} failed `;
-                return my_response.response(res, "failed", "", 500, message);
-            }
+        if (result.affectedRows > 0) {
+            // delete old image
+            const my_request = { protocol: req.protocol, host: req.get('host') }
+            delete_image.delete(my_request, old_data[0].book_image);
+            return my_response.response(res, "success", newData, 200, "Updated!");
         } else {
-            const message = `There is not file to upload `;
-            return my_response.response(res, "failed", "", 500, error_message.my_error_message({}, message));
+            // delete new image when update data is failed
+            const my_request = { protocol: req.protocol, host: req.get('host') }
+            delete_image.delete(my_request, req.file.filename);
+
+            const message = `Update data ${data.book_title} failed `;
+            return my_response.response(res, "failed", "", 500, message);
         }
     } catch (error) {
         console.log(error);

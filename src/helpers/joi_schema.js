@@ -44,7 +44,7 @@ module.exports = {
                     return obj;
                 }, {});
             return new Promise((resolve, reject) => {
-                const error = Joi.validate(book, joi_schema);
+                const error = Joi.validate(book, dynamicSchema);
 
                 if (error.error != null) {
                   reject(my_joi_error(error));
