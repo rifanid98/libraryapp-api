@@ -6,7 +6,7 @@ const config = {
     database: process.env.MYSQL_DATABASE,
   },
   jwtSecretKey: process.env.JWT_KEY,
-  jwtTokenLoginLifeTime: '600s',
+  jwtTokenLoginLifeTime: '7d',
   jwtTokenRefreshLifeTime: '7d',
   rootProjectPath: 'libraryapp-api',
   imageUrlPath: function (req) {
