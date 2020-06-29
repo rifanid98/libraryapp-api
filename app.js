@@ -52,7 +52,7 @@ app.use(morgan('dev'));
  * .
  * Menerima request
  */
-app.use(body_parser.urlencoded({extended: true}));
+app.use(body_parser.urlencoded({ extended: true }));
 app.use(body_parser.json());
 
 /**============================ Routes ============================ */
@@ -108,10 +108,10 @@ app.use(function (error, req, res, next) {
  */
 const conn = require('./src/helpers/mysql');
 // connect function
-function connect(){
+function connect() {
     conn.connect(function (error) {
-    if (error) throw error;
-    console.log("DB Connected!");
+        if (error) throw error;
+        console.log("DB Connected!");
     });
 }
 
