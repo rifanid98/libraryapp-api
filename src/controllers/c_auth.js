@@ -35,10 +35,10 @@ module.exports = {
         try {
             const data = req.body;
             const error = await validate.validateRegister(data);
-            
+
             const checkData = await authModel.getDataByName(data.username);
             console.log(checkData);
-            
+
             if (checkData < 1) {
                 const salt = bcrypt.genSaltSync(10);
                 const hash = bcrypt.hashSync(data.password, salt);
@@ -53,7 +53,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return myResponse.response( res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+            return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
         }
     },
 
@@ -72,19 +72,19 @@ module.exports = {
                         ...result[0],
                         tokenType: 'login'
                     };
-                    const token = jwt.sign(tokenLoginData, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                    const token = jwt.sign(tokenLoginData, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
                     const tokenRefreshData = {
                         ...result[0],
                         tokenType: 'refresh'
                     };
-                    const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, {expiresIn: config.jwtTokenRefreshLifeTime});
+                    const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, { expiresIn: config.jwtTokenRefreshLifeTime });
                     result[0].tokenLogin = token;
                     result[0].tokenRefresh = tokenRefresh;
 
                     return myResponse.response(res, "success", result, 200, "Ok!");
                 } else {
                     const message = `Username or Password is wrong!`;
-                    return myResponse.response( res, "failed", "", 400, message);
+                    return myResponse.response(res, "failed", "", 400, message);
                 }
             } else {
                 const message = `Username or Password is wrong!`;
@@ -104,12 +104,12 @@ module.exports = {
             const tokenRefresh = data.tokenRefresh;
             const decoded = jwt.verify(tokenRefresh, config.jwtSecretKey);
             console.log(decoded);
-            
+
             if (decoded.tokenType == 'refresh') {
                 delete decoded.iat;
                 delete decoded.exp;
                 decoded.tokenType = 'login';
-                const tokenLogin = jwt.sign(decoded, config.jwtSecretKey, {expiresIn: config.jwtTokenLoginLifeTime});
+                const tokenLogin = jwt.sign(decoded, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
                 return myResponse.response(res, "success", { tokenLogin: tokenLogin }, 200, "Ok!");
             } else {
                 const message = `Wrong token. Please use refresh token`;
