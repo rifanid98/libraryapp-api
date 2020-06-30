@@ -6,7 +6,7 @@ const deleteImage = require("./deleteImage");
 module.exports = {
     myErrorMessage: function (error, message) {
         var errorMessage = "Internal Server Error";
-        
+
         if (Object.keys(error).length < 1 && Object.keys(message).length > 0) {
             var errorMessage = message;
         }
@@ -15,7 +15,8 @@ module.exports = {
                 var errorMessage = error.message;
             }
             if ('sqlMessage' in error) {
-                var errorMessage = error.sqlMessage;
+                // var errorMessage = error.sqlMessage;
+                var errorMessage = "Internal Server Error";
             }
         }
         return errorMessage;
