@@ -32,6 +32,19 @@ module.exports = {
         })
     },
 
+    getDataById: function (id) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = "SELECT * FROM genres WHERE genre_id = ? ";
+
+            conn.query(sqlQuery, id, function (error, result) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(result);
+            })
+        })
+    },
+
     addData: function (data) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "INSERT INTO genres SET ?";
