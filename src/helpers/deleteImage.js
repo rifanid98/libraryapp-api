@@ -5,16 +5,18 @@ const imagePath = global.appRoot + "/" + path;
 const config = require("../configs/global");
 
 module.exports = {
-    delete: function (myRequest, file_name = "") {
-        const newFileName = file_name.split(`${myRequest.protocol}://${myRequest.host}/${config.rootProjectPath}/images/`).pop();
-        const targetFile = `${imagePath}${newFileName}`;
-        
-        if (fs.existsSync(targetFile)) {
-            try {
-                fs.unlinkSync(targetFile);
-            } catch (error) {
-                console.log(error);
-            }
+  delete: function (myRequest, file_name = "") {
+    const newFileName = file_name.split(`${myRequest.protocol}://${myRequest.host}/${config.rootProjectPath}/images/`).pop();
+    const targetFile = `${imagePath}${newFileName}`;
+
+    if (newFileName.split(`.`)[0] !== `default`) {
+      if (fs.existsSync(targetFile)) {
+        try {
+          fs.unlinkSync(targetFile);
+        } catch (error) {
+          console.log(error);
         }
+      }
     }
+  }
 }
