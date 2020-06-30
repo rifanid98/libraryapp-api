@@ -18,8 +18,15 @@ const authMiddleware = require('../middlewares/mdl_auth');
 // load the controller
 const usersController = require('../controllers/c_users');
 
-// register user
-router.get('/', authMiddleware.checkRole([3, 2, 1]), usersController.getUsers);
-router.delete('/:id', authMiddleware.checkRole([3, 2, 1]), usersController.deleteUser);
+// Get all users
+router.get('/', authMiddleware.checkRole([3, 2, 1]), upload.none(), usersController.getUsers);
+// Get detail user
+router.get('/:id', authMiddleware.checkRole([3, 2, 1]), upload.none(), usersController.getUserById);
+// Post a user
+router.post('/', authMiddleware.checkRole([2, 1]), upload.none(), usersController.postUser);
+// Patch a User
+router.patch('/:id', authMiddleware.checkRole([2, 1]), upload.none(), usersController.patchUser);
+// Delete a user
+router.delete('/:id', authMiddleware.checkRole([1]), upload.none(), usersController.deleteUser);
 
 module.exports = router;
