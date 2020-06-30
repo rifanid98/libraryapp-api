@@ -48,9 +48,14 @@ function generateFilters(filters = {}, fields = {}) {
 					search[filter] = filters[filter];
 				}
 			}
-			if (filter == "genre" && "name" == fieldName) {
+			if (filter == "genre" && "genre_name" == fieldName) {
 				if (filter in search == false) {
-					search["name"] = filters[filter];
+					search[fieldName] = filters[filter];
+				}
+			}
+			if (filter == "author" && "author_name" == fieldName) {
+				if (filter in search == false) {
+					search[fieldName] = filters[filter];
 				}
 			}
 		}
@@ -100,6 +105,8 @@ async function getBooks(req, res) {
 			pagination: generatedFilters.pagination,
 			sort: generatedFilters.sort
 		};
+		// console.log(newFilters);
+		// return;
 
 		const result = await booksModel.getDataCustom(newFilters, totalData.length);
 		result.nextPage = req.protocol + '://' + req.get('host') + req.originalUrl;
