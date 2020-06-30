@@ -18,6 +18,42 @@ module.exports = {
         })
     },
 
+    getDataById: function (id) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = "SELECT * FROM users WHERE user_id = ?";
+            conn.query(sqlQuery, id, function (error, result) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(result);
+            })
+        })
+    },
+
+    getDataByUsername: function (username) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = "SELECT * FROM users WHERE username = ?";
+            conn.query(sqlQuery, username, function (error, result) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(result);
+            })
+        })
+    },
+
+    getDataByEmail: function (email) {
+        return new Promise((resolve, reject) => {
+            const sqlQuery = "SELECT * FROM users WHERE email = ?";
+            conn.query(sqlQuery, email, function (error, result) {
+                if (error) {
+                    reject(error);
+                }
+                resolve(result);
+            })
+        })
+    },
+
     addData: function (data) {
         return new Promise((resolve, reject) => {
             const sqlQuery = "INSERT INTO users SET ?";
