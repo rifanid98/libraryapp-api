@@ -22,8 +22,9 @@ module.exports = {
             // bookImage: Joi.required(),
             title: Joi.string().trim().min(3).required(),
             description: Joi.string().trim().min(3).required(),
-            author: Joi.string().trim().min(3).required(),
+            author_id: Joi.number().min(1).required(),
             status: Joi.number().min(0).max(1).required(),
+            quantity: Joi.number().min(1).required(),
             genre_id: Joi.number().min(0).required()
         };
 
