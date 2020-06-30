@@ -6,7 +6,7 @@
 const conn = require('../helpers/mysql');
 
 module.exports = {
-    getBookAndGenreFieldName: function() {
+    getBookAndGenreFieldName: function () {
         return new Promise((resolve, reject) => {
             const sqlQuery = `DESCRIBE v_book_and_genre`;
             conn.query(sqlQuery, function (error, result) {
