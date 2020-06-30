@@ -3,7 +3,7 @@
  * .
  * Load Model
  */
-const bookGenresModel = require("../models/m_bookGenres");
+const bookGenresModel = require("../models/m_genres");
 
 /**
  * custom response helper
@@ -24,7 +24,7 @@ const errorMessage = require("../helpers/myErrorMessage");
  */
 
 //================ GET =====================//
-async function getBookGenres(req, res) {
+async function getGenres(req, res) {
     try {
         const result = await bookGenresModel.getAllData();
         return myResponse.response(res, "success", result, 200, "Ok!")
@@ -34,7 +34,7 @@ async function getBookGenres(req, res) {
     }
 }
 
-async function getBookGenreById(req, res) {
+async function getGenreById(req, res) {
     try {
         const id = req.params.id;
         const result = await bookGenresModel.getDataById(id);
@@ -47,9 +47,9 @@ async function getBookGenreById(req, res) {
 
 
 //================ POST ====================//
-async function postBookGenre(req, res) {
+async function postGenre(req, res) {
     try {
-        const error = await validate.validateBookGenres(req.body);
+        const error = await validate.validateGenres(req.body);
 
         const data = req.body;
         const checkGenre = await bookGenresModel.getDataByName(data);
@@ -74,9 +74,9 @@ async function postBookGenre(req, res) {
 }
 
 //================ PATCH ====================//
-async function patchBookGenre(req, res) {
+async function patchGenre(req, res) {
     try {
-        const error = await validate.validateBookGenres(req.body);
+        const error = await validate.validateGenres(req.body);
 
         const data = req.body;
         const id = req.params.id;
@@ -102,7 +102,7 @@ async function patchBookGenre(req, res) {
 }
 
 //================ DELETE ===================//
-async function deleteBookGenre(req, res) {
+async function deleteGenre(req, res) {
     try {
         const id = req.params.id;
         const result = await bookGenresModel.deleteData(id);
@@ -123,9 +123,9 @@ async function deleteBookGenre(req, res) {
 }
 
 module.exports = {
-    getBookGenres,
-    postBookGenre,
-    patchBookGenre,
-    deleteBookGenre,
-    getBookGenreById
+    getGenres,
+    postGenre,
+    patchGenre,
+    deleteGenre,
+    getGenreById
 }
