@@ -12,12 +12,12 @@ function myJoiError(error = {}) {
         joiError: 'joi',
         message: joiError.message
     };
-    
+
     return errorMessage;
 }
 
 module.exports = {
-    validateBooks: function(book, field = null) {
+    validateBooks: function (book, field = null) {
         const joiSchema = {
             // bookImage: Joi.required(),
             title: Joi.string().trim().min(3).required(),
@@ -32,7 +32,7 @@ module.exports = {
                 const error = Joi.validate(book, joiSchema);
 
                 if (error.error != null) {
-                  reject(myJoiError(error));
+                    reject(myJoiError(error));
                 }
                 resolve();
             });
@@ -47,13 +47,13 @@ module.exports = {
                 const error = Joi.validate(book, dynamicSchema);
 
                 if (error.error != null) {
-                  reject(myJoiError(error));
+                    reject(myJoiError(error));
                 }
                 resolve();
             });
         }
     },
-    validateBookGenres: function (bookGenres) {
+    validateGenres: function (bookGenres) {
         const joiSchema = {
             name: Joi.string().trim().min(3).required()
         };
@@ -67,6 +67,22 @@ module.exports = {
             resolve();
         });
     },
+
+    validateAuthors: function (authors) {
+        const joiSchema = {
+            name: Joi.string().trim().min(3).required()
+        };
+
+        return new Promise((resolve, reject) => {
+            const error = Joi.validate(authors, joiSchema);
+
+            if (error.error != null) {
+                reject(myJoiError(error));
+            }
+            resolve();
+        });
+    },
+
     validateRegister: function (userData) {
         const joiSchema = {
             username: Joi.string().trim().min(3).required(),
@@ -77,10 +93,10 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const error = Joi.validate(userData, joiSchema);
 
-           if (error.error != null) {
-             reject(myJoiError(error));
-           }
-           resolve();
+            if (error.error != null) {
+                reject(myJoiError(error));
+            }
+            resolve();
         });
     },
     validate_borrow: function (userData) {
