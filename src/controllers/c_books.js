@@ -5,6 +5,7 @@
  */
 const booksModel = require("../models/m_books");
 const dbViewsModel = require("../models/m_dbviews");
+const historiesModel = require("../models/m_histories");
 
 /**
  * custom response helper
@@ -335,31 +336,80 @@ async function getBookDetail(req, res) {
 async function borrowBook(req, res) {
 	try {
 		const id = req.params.id;
+		const userId = req.decodedToken.user_id;
 		const oldData = await getBookById(id);
 
+		// check if borrower has been borrowed same book 
+		const checkBorrowStatus = await historiesModel.getBorrowStatus(userId, oldData[0].book_id);
+		if (checkBorrowStatus.length > 0) {
+			const message = `the book has been borrowed by user with id #${userId} and has not been returned`;
+			return myResponse.response(res, "failed", "", 404, message);
+		}
+
+		// check if book is exists
 		if (oldData.length < 1) {
 			const message = `Data with id ${id} not found`;
 			return myResponse.response(res, "failed", "", 404, message);
 		}
 
-		if (oldData[0].bookStatus == 1) {
+		// check if book is available
+		if (oldData[0].status == 1) {
 			const message = `Book with id ${oldData[0].book_id} has been borrowed`;
 			return myResponse.response(res, "failed", "", 409, message);
 		}
 
-		const data_to_update = {
-			bookStatus: 1
-		};
+		const bookLeft = await booksModel.getDataById(id);
+		const bookQuantity = bookLeft[0].quantity;
+		let bookData = {};
+		if (bookQuantity > 1) {
+			bookData = {
+				quantity: bookQuantity - 1
+			}
+		}
+		// if book less than 2, set book status to not available
+		else if (bookQuantity === 1) {
+			bookData = {
+				quantity: bookQuantity - 1,
+				status: 1
+			}
+		}
 
-		const result = await booksModel.updateData(data_to_update, id);
+		// borrowing the book (updating quantity)
+		const updateBookQuantity = await booksModel.updateData(bookData, id);
+		// if update quantity of the book failed
+		if (updateBookQuantity.affectedRows < 1) {
+			const message = `Failed to borrow a book`;
+			return myResponse.response(res, "failed", "", 500, message);
+		}
 
-		if (result.affectedRows > 0) {
-			const new_data = {
-				...oldData[0]
-			};
-			return myResponse.response(res, "success", new_data, 200, "Borrowed!");
+		const borrowData = {
+			book_id: id,
+			user_id: userId
+		}
+		// inserting into history
+		const insertIntoHistory = await historiesModel.addData(borrowData);
+		// if inserting into history failed
+		if (insertIntoHistory.affectedRows > 0) {
+			const data = {
+				history_id: insertIntoHistory.insertId,
+				title: oldData.title
+			}
+
+			return myResponse.response(res, "success", data, 200, "Ok!");
 		} else {
-			const message = `Update data ${oldData[0].title} failed `;
+			// restoring back the book quantity
+			const bookData = {
+				quantity: bookQuantity + 1
+			}
+
+			const restoreBookQuantity = await booksModel.updateData(bookData, id);
+			if (restoreBookQuantity.affectedRows < 1) {
+				// if restoring book quantity failed
+				const message = `Failed to borrow a book, book not restored`;
+				return myResponse.response(res, "failed", "", 500, message);
+			}
+
+			const message = `Failed to borrow a book, book restored`;
 			return myResponse.response(res, "failed", "", 500, message);
 		}
 	} catch (error) {
@@ -367,35 +417,81 @@ async function borrowBook(req, res) {
 		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
 	}
 }
+
 async function returnBook(req, res) {
 	try {
 		const id = req.params.id;
+		const userId = req.decodedToken.user_id;
 		const oldData = await getBookById(id);
 
+		// get history data
+		const historyData = await historiesModel.getBorrowStatus(userId, id);
+
+		if (historyData.length < 1) {
+			const message = `No books have not been returned`;
+			return myResponse.response(res, "failed", "", 409, message);
+		}
+
+		// check if book is exists
 		if (oldData.length < 1) {
 			const message = `Data with id ${id} not found`;
 			return myResponse.response(res, "failed", "", 404, message);
 		}
 
-		if (oldData[0].bookStatus == 0) {
-			const message = `Book with id ${oldData[0].book_id} has been returned`;
-			return myResponse.response(res, "failed", "", 409, message);
+		const bookLeft = await booksModel.getDataById(id);
+		const bookQuantity = bookLeft[0].quantity;
+		let bookData = {};
+		if (bookQuantity > 0) {
+			bookData = {
+				quantity: bookQuantity + 1,
+				status: 0
+			}
 		}
 
-		const data_to_update = {
-			bookStatus: 0
-		};
+		// returning the book (updating quantity)
+		const updateBookQuantity = await booksModel.updateData(bookData, id);
+		// if update quantity of the book failed
+		if (updateBookQuantity.affectedRows < 1) {
+			const message = `Failed to return a book`;
+			return myResponse.response(res, "failed", "", 500, message);
+		}
 
-		const result = await booksModel.updateData(data_to_update, id);
+		const historyId = historyData[0].history_id;
+		const returnData = {
+			done: 1
+		}
+		const returnBook = await historiesModel.updateData(returnData, historyId);
 
-		if (result.affectedRows > 0) {
+		if (returnBook.affectedRows > 0) {
 			const data = {
-				book_id: oldData[0].book_id
-			};
-
-			return myResponse.response(res, "success", data, 200, "Returned!");
+				history_id: historyData[0].history_id,
+				title: oldData[0].title
+			}
+			const message = `Book returned`;
+			return myResponse.response(res, "success", data, 200, message);
 		} else {
-			const message = `Update data ${oldData[0].title} failed `;
+			// restoring back the book quantity
+			if (bookQuantity > 0) {
+				bookData = {
+					quantity: bookQuantity - 1
+				}
+			}
+			// if book less than 2, set book status to available
+			else if (bookQuantity === 0) {
+				bookData = {
+					quantity: bookQuantity - 1,
+					status: 1
+				}
+			}
+
+			const restoreBookQuantity = await booksModel.updateData(bookData, id);
+			if (restoreBookQuantity.affectedRows < 1) {
+				// if restoring book quantity failed
+				const message = `Failed to return a book, book data not restored`;
+				return myResponse.response(res, "failed", "", 500, message);
+			}
+
+			const message = `Failed to borrow a book, book data restored`;
 			return myResponse.response(res, "failed", "", 500, message);
 		}
 	} catch (error) {
