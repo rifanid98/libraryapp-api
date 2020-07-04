@@ -22,6 +22,8 @@ const historiesController = require('../controllers/c_histories');
 router.get('/', authMiddleware.checkRole([3, 2, 1]), historiesController.getHistories);
 // Get Detail History
 router.get('/:id', authMiddleware.checkRole([3, 2, 1]), historiesController.getHistoryById);
+// Get Pending History
+router.get('/:bookId/:userId', authMiddleware.checkRole([3, 2, 1]), historiesController.getPendingHistory);
 // Post a history
 router.post('/', authMiddleware.checkRole([2, 1]), upload.none(), historiesController.postHistory);
 // Patch a history
