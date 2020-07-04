@@ -10,7 +10,9 @@ const path = require('path');
 const storage = multer.diskStorage({
     destination: path.join('src/assets/images/'),
     filename: function (req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        const originalName = file.originalname.split(' ');
+        const newName = originalName.join('-');
+        cb(null, new Date().toISOString() + newName);
     }
 });
 // set file filter
@@ -26,7 +28,7 @@ const fileFilter = function (req, file, cb) {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 20
+        fileSize: 1024 * 1024 * 3
     },
     // fileFilter: fileFilter,
 });
