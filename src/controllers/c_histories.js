@@ -26,7 +26,12 @@ const errorMessage = require("../helpers/myErrorMessage");
 //================ GET =====================//
 async function getHistories(req, res) {
     try {
-        const result = await historiesModel.getAllData();
+    let result = {};
+    if (req.query.user_id) {
+      result = await historiesModel.getDataByUserId(req.query.user_id)
+    } else {
+      result = await historiesModel.getAllDetailData();
+    }
         return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
@@ -45,6 +50,17 @@ async function getHistoryById(req, res) {
     }
 }
 
+async function getPendingHistory(req, res) {
+    try {
+        const bookId = req.params.bookId;
+        const userId = req.params.userId;
+        const result = await historiesModel.getDataPending(bookId, userId);
+        return myResponse.response(res, "success", result, 200, "Ok!")
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
 
 //================ POST ====================//
 async function postHistory(req, res) {
@@ -127,5 +143,6 @@ module.exports = {
     postHistory,
     patchHistory,
     deleteHistory,
-    getHistoryById
+    getHistoryById,
+    getPendingHistory
 }
