@@ -43,6 +43,7 @@ module.exports = {
 				const salt = bcrypt.genSaltSync(10);
 				const hash = bcrypt.hashSync(data.password, salt);
 				data.password = hash;
+				data.role = 3;
 
 				const result = await authModel.register(data);
 				delete data.password;
@@ -69,12 +70,16 @@ module.exports = {
 
 					// jsonwebtoken
 					const tokenLoginData = {
-						...result[0],
+						user_id: result[0].user_id,
+						role: result[0].role,
+						name: result[0].username,
 						tokenType: 'login'
 					};
 					const token = jwt.sign(tokenLoginData, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
 					const tokenRefreshData = {
-						...result[0],
+						user_id: result[0].user_id,
+						role: result[0].role,
+						name: result[0].username,
 						tokenType: 'refresh'
 					};
 					const tokenRefresh = jwt.sign(tokenRefreshData, config.jwtSecretKey, { expiresIn: config.jwtTokenRefreshLifeTime });
