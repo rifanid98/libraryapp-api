@@ -22,8 +22,6 @@ const errorMessage = require("../helpers/myErrorMessage");
 /**
  * CRUD
  */
-
-//================ GET =====================//
 async function getAuthors(req, res) {
     try {
         const result = await authorsModel.getAllData();
@@ -34,19 +32,6 @@ async function getAuthors(req, res) {
     }
 }
 
-async function getAuthorsById(req, res) {
-    try {
-        const id = req.params.id
-        const result = await authorsModel.getDataById(id);
-        return myResponse.response(res, "success", result, 200, "Ok!")
-    } catch (error) {
-        console.log(error);
-        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
-    }
-}
-
-
-//================ POST ====================//
 async function postAuthor(req, res) {
     try {
         const error = await validate.validateAuthors(req.body);
@@ -74,7 +59,6 @@ async function postAuthor(req, res) {
     }
 }
 
-//================ PATCH ====================//
 async function patchAuthor(req, res) {
     try {
         const error = await validate.validateAuthors(req.body);
@@ -102,7 +86,6 @@ async function patchAuthor(req, res) {
     }
 }
 
-//================ DELETE ===================//
 async function deleteAuthor(req, res) {
     try {
         const id = req.params.id;
@@ -117,6 +100,20 @@ async function deleteAuthor(req, res) {
             const message = `Data with id ${id} is not found`;
             return myResponse.response(res, "failed", "", 404, message);
         }
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
+/**
+ * Another CRUD
+ */
+async function getAuthorsById(req, res) {
+    try {
+        const id = req.params.id
+        const result = await authorsModel.getDataById(id);
+        return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));

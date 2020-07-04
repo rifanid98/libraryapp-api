@@ -22,8 +22,6 @@ const errorMessage = require("../helpers/myErrorMessage");
 /**
  * CRUD
  */
-
-//================ GET =====================//
 async function getGenres(req, res) {
     try {
         const result = await bookGenresModel.getAllData();
@@ -34,19 +32,6 @@ async function getGenres(req, res) {
     }
 }
 
-async function getGenreById(req, res) {
-    try {
-        const id = req.params.id;
-        const result = await bookGenresModel.getDataById(id);
-        return myResponse.response(res, "success", result, 200, "Ok!")
-    } catch (error) {
-        console.log(error);
-        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
-    }
-}
-
-
-//================ POST ====================//
 async function postGenre(req, res) {
     try {
         const error = await validate.validateGenres(req.body);
@@ -73,7 +58,6 @@ async function postGenre(req, res) {
     }
 }
 
-//================ PATCH ====================//
 async function patchGenre(req, res) {
     try {
         const error = await validate.validateGenres(req.body);
@@ -101,7 +85,6 @@ async function patchGenre(req, res) {
     }
 }
 
-//================ DELETE ===================//
 async function deleteGenre(req, res) {
     try {
         const id = req.params.id;
@@ -116,6 +99,20 @@ async function deleteGenre(req, res) {
             const message = `Data with id ${id} is not found`;
             return myResponse.response(res, "failed", "", 404, message);
         }
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
+/**
+ * Another CRUD
+ */
+async function getGenreById(req, res) {
+    try {
+        const id = req.params.id;
+        const result = await bookGenresModel.getDataById(id);
+        return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));

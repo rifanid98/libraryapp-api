@@ -22,16 +22,14 @@ const errorMessage = require("../helpers/myErrorMessage");
 /**
  * CRUD
  */
-
-//================ GET =====================//
 async function getHistories(req, res) {
     try {
-    let result = {};
-    if (req.query.user_id) {
-      result = await historiesModel.getDataByUserId(req.query.user_id)
-    } else {
-      result = await historiesModel.getAllDetailData();
-    }
+        let result = {};
+        if (req.query.user_id) {
+            result = await historiesModel.getDataByUserId(req.query.user_id)
+        } else {
+            result = await historiesModel.getAllDetailData();
+        }
         return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
@@ -39,30 +37,6 @@ async function getHistories(req, res) {
     }
 }
 
-async function getHistoryById(req, res) {
-    try {
-        const id = req.params.id;
-        const result = await historiesModel.getDataById(id);
-        return myResponse.response(res, "success", result, 200, "Ok!")
-    } catch (error) {
-        console.log(error);
-        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
-    }
-}
-
-async function getPendingHistory(req, res) {
-    try {
-        const bookId = req.params.bookId;
-        const userId = req.params.userId;
-        const result = await historiesModel.getDataPending(bookId, userId);
-        return myResponse.response(res, "success", result, 200, "Ok!")
-    } catch (error) {
-        console.log(error);
-        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
-    }
-}
-
-//================ POST ====================//
 async function postHistory(req, res) {
     try {
         const error = await validate.validateGenres(req.body);
@@ -89,7 +63,6 @@ async function postHistory(req, res) {
     }
 }
 
-//================ PATCH ====================//
 async function patchHistory(req, res) {
     try {
         const error = await validate.validateGenres(req.body);
@@ -117,7 +90,6 @@ async function patchHistory(req, res) {
     }
 }
 
-//================ DELETE ===================//
 async function deleteHistory(req, res) {
     try {
         const id = req.params.id;
@@ -132,6 +104,32 @@ async function deleteHistory(req, res) {
             const message = `Data with id ${id} is not found`;
             return myResponse.response(res, "failed", "", 404, message);
         }
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
+/**
+ * Another CRUD
+ */
+async function getHistoryById(req, res) {
+    try {
+        const id = req.params.id;
+        const result = await historiesModel.getDataById(id);
+        return myResponse.response(res, "success", result, 200, "Ok!")
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
+async function getPendingHistory(req, res) {
+    try {
+        const bookId = req.params.bookId;
+        const userId = req.params.userId;
+        const result = await historiesModel.getDataPending(bookId, userId);
+        return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
         return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));

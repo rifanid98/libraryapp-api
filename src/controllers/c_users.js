@@ -38,20 +38,6 @@ async function getUsers(req, res) {
 	}
 }
 
-async function getUserById(req, res) {
-	try {
-		const id = req.params.id;
-		const result = await usersModel.getDataById(id);
-		for (key in result) {
-			delete result[key].password;
-		}
-		return myResponse.response(res, "success", result, 200, "Ok!")
-	} catch (error) {
-		console.log(error);
-		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
-	}
-}
-
 async function postUser(req, res) {
 	try {
 		// Joi validation
@@ -148,6 +134,23 @@ async function deleteUser(req, res) {
 			const message = `Data with id ${id} is not found`;
 			return myResponse.response(res, "failed", "", 404, message);
 		}
+	} catch (error) {
+		console.log(error);
+		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+	}
+}
+
+/**
+ * Another CRUD
+ */
+async function getUserById(req, res) {
+	try {
+		const id = req.params.id;
+		const result = await usersModel.getDataById(id);
+		for (key in result) {
+			delete result[key].password;
+		}
+		return myResponse.response(res, "success", result, 200, "Ok!")
 	} catch (error) {
 		console.log(error);
 		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
