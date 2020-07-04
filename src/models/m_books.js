@@ -18,7 +18,7 @@ function generateLike(filters = {}) {
     // if (key == "genre") {
     //     field = key + "_name";
     // }
-    result += (i == length) ? field + " LIKE " + filter : field + " LIKE " + filter + " OR ";
+    result += (i == length) ? `${field} LIKE ${filter}` : `${field} LIKE ${filter} OR `;
     i++;
   }
 
@@ -28,7 +28,8 @@ function generateLike(filters = {}) {
 module.exports = {
   getFieldName: function () {
     return new Promise((resolve, reject) => {
-      conn.query(`DESCRIBE books`, function (error, result) {
+      conn.query(`DESCRIBE v_book_and_genre`, function (error, result) {
+        //      conn.query(`DESCRIBE books`, function (error, result) {
         if (error) {
           reject(error);
         }
@@ -70,11 +71,13 @@ module.exports = {
       }
     }
 
+
+
     const totalData = await this.getTotalDataCustom(sqlQuery, filters.search);
 
     // pagination
     var dataPerPage = 5;
-    var activePage = 1
+    var activePage = 1;
     var totalPage = 0;
 
     if (Object.keys(filters.pagination).length == 2) {
@@ -122,7 +125,7 @@ module.exports = {
 
   getDataById: function (id) {
     return new Promise((resolve, reject) => {
-      const sqlQuery = "SELECT * FROM books WHERE book_id = ?";
+      const sqlQuery = "SELECT * FROM v_book_and_genre WHERE book_id = ?";
       conn.query(sqlQuery, id, function (error, result) {
         if (error) {
           reject(error);
@@ -132,20 +135,12 @@ module.exports = {
     })
   },
 
-  getDataByFilter: function (filter) {
+  getDataByFilter: function (filters) {
     return new Promise((resolve, reject) => {
-      const sqlQuery =
-        `SELECT 
-            books.*, 
-            genres.name 
-            FROM 
-            books INNER JOIN genres 
-            WHERE 
-            books.genre_id=genres.genre_id 
-            AND 
-            (` + filter + `)`;
+      const newFilters = this.generateLike(filters)
+      const sqlQuery = `SELECT * FROM v_book_and_genre WHERE ${newFilters}`;
 
-      conn.query(sqlQuery, function (error, result) {
+      conn.query(sqlQuery, filter, function (error, result) {
         if (error) {
           reject(error);
         }
