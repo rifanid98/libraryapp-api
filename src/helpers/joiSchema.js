@@ -85,7 +85,9 @@ module.exports = {
 	validateRegister: function (userData) {
 		const joiSchema = {
 			username: Joi.string().trim().min(3).required(),
+			full_name: Joi.string().trim().min(3).required(),
 			password: Joi.string().trim().min(3).required(),
+			email: Joi.string().email({ minDomainAtoms: 2 }),
 			role: Joi.number().min(1).required()
 		};
 
@@ -130,6 +132,7 @@ module.exports = {
 	validateUsers: function (user, field = null) {
 		const joiSchema = {
 			username: Joi.string().trim().min(3).required(),
+			full_name: Joi.string().trim().min(3).required(),
 			password: Joi.string().trim().min(3).required(),
 			email: Joi.string().email({ minDomainAtoms: 2 }),
 			role: Joi.number().min(1).max(3).required()
