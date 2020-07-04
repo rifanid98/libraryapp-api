@@ -96,7 +96,6 @@ async function getBookById(id = 0) {
 async function getBooks(req, res) {
 	try {
 		const filters = req.query;
-
 		const fields = await dbViewsModel.getBookAndGenreFieldName();
 		const totalData = await booksModel.getAllData();
 		const generatedFilters = generateFilters(filters, fields);
@@ -106,8 +105,6 @@ async function getBooks(req, res) {
 			pagination: generatedFilters.pagination,
 			sort: generatedFilters.sort
 		};
-		// console.log(newFilters);
-		// return;
 
 		const result = await booksModel.getDataCustom(newFilters, totalData.length);
 		result.nextPage = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -228,7 +225,7 @@ async function patchBook(req, res) {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				data = {
 					...body,
-					image: req.file.filename,
+					image: `${config.imageUrlPath(req)}${req.file.filename}`,
 				};
 			} else {
 				// delete new file when not an image
