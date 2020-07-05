@@ -163,9 +163,11 @@ async function postBook(req, res) {
 			data.book_id = result.insertId;
 			return myResponse.response(res, "success", data, 201, "Created!");
 		} else {
-			// delete new image when insert data is failed
-			const myRequest = { protocol: req.protocol, host: req.get('host') }
-			deleteImage.delete(myRequest, req.file.filename);
+			if (req.file) {
+				// delete new image when insert data is failed
+				const myRequest = { protocol: req.protocol, host: req.get('host') }
+				deleteImage.delete(myRequest, req.file.filename);
+			}
 
 			const message = `Add data failed`;
 			return myResponse.response(res, "failed", "", 409, message);
@@ -174,7 +176,7 @@ async function postBook(req, res) {
 		console.log(error);
 
 		// delete image when error
-		if (req.file !== undefined) {
+		if (req.file) {
 			const myRequest = { protocol: req.protocol, host: req.get('host') }
 			deleteImage.delete(myRequest, req.file.filename);
 		}
@@ -193,6 +195,10 @@ async function patchBook(req, res) {
 		const id = req.params.id;
 		const oldData = await getBookById(id);
 		if (oldData.length < 1) {
+			// delete new image when duplicated data
+			const myRequest = { protocol: req.protocol, host: req.get('host') }
+			deleteImage.delete(myRequest, req.file.filename);
+
 			const message = `Data with id ${id} not found`;
 			return myResponse.response(res, "failed", "", 404, message);
 		}
@@ -270,7 +276,7 @@ async function patchBook(req, res) {
 		console.log(error);
 
 		// delete image when error
-		if (req.file === undefined) {
+		if (req.file) {
 			const myRequest = { protocol: req.protocol, host: req.get('host') }
 			deleteImage.delete(myRequest, req.file.filename);
 		}
