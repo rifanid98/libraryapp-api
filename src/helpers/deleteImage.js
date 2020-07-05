@@ -9,7 +9,7 @@ module.exports = {
     const newFileName = file_name.split(`${myRequest.protocol}://${myRequest.host}/${config.rootProjectPath}/images/`).pop();
     const targetFile = `${imagePath}${newFileName}`;
 
-    if (newFileName.split(`.`)[0] !== `default`) {
+    if (newFileName.split(`.`)[0] !== `default` || newFileName.split(`.`)[0] !== `avatar`) {
       if (fs.existsSync(targetFile)) {
         try {
           fs.unlinkSync(targetFile);
