@@ -71,22 +71,10 @@ function getDataById(id) {
     })
 }
 
-function getDataByUsername(username) {
+function getDataByField(field) {
     return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT * FROM users WHERE username = ?";
-        conn.query(sqlQuery, username, function (error, result) {
-            if (error) {
-                reject(error);
-            }
-            resolve(result);
-        })
-    })
-}
-
-function getDataByEmail(email) {
-    return new Promise((resolve, reject) => {
-        const sqlQuery = "SELECT * FROM users WHERE email = ?";
-        conn.query(sqlQuery, email, function (error, result) {
+        const sqlQuery = "SELECT * FROM users WHERE ?";
+        conn.query(sqlQuery, field, function (error, result) {
             if (error) {
                 reject(error);
             }
@@ -98,9 +86,8 @@ function getDataByEmail(email) {
 module.exports = {
     getAllData,
     getDataById,
-    getDataByUsername,
-    getDataByEmail,
     addData,
     updateData,
-    deleteDataById
+    deleteDataById,
+    getDataByField
 }
