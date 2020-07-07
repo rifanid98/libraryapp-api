@@ -75,6 +75,7 @@ async function login(req, res) {
 					user_id: result[0].user_id,
 					role: result[0].role,
 					name: result[0].username,
+					image: result[0].image,
 					tokenType: 'login'
 				};
 				const token = jwt.sign(tokenLoginData, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
