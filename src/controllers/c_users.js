@@ -52,8 +52,8 @@ async function postUser(req, res) {
 
 		const body = req.body;
 		let checkUser = 0;
-		const checkUsername = await usersModel.getDataByUsername(body.username);
-		const checkEmail = await usersModel.getDataByEmail(body.email);
+		const checkUsername = await usersModel.getDataByField({ username: body.username });
+		const checkEmail = await usersModel.getDataByField({ email: body.email });
 
 		checkUser += checkUsername.length;
 		checkUser += checkEmail.length;
@@ -85,7 +85,10 @@ async function postUser(req, res) {
 				return myResponse.response(res, "failed", "", 500, message);
 			}
 		}
-
+		// if user registered by admin
+		if (!body.password) {
+			body.password = '12345';
+		}
 		const salt = bcrypt.genSaltSync(10);
 		const hash = bcrypt.hashSync(body.password, salt);
 		body.password = hash;
@@ -97,7 +100,7 @@ async function postUser(req, res) {
 				user_id: add.insertId,
 				...body
 			}
-			return myResponse.response(res, "success", result, 200, "Ok!")
+			return myResponse.response(res, "success", result, 201, "Ok!")
 		} else {
 			if (req.file) {
 				// delete new image when insert data is failed
@@ -233,13 +236,23 @@ async function patchUser(req, res) {
 async function deleteUser(req, res) {
 	try {
 		const id = req.params.id;
+		const oldData = await usersModel.getDataById(id);
+		if (oldData.length < 1) {
+			const message = `Data with id ${id} not found`;
+			return myResponse.response(res, "failed", "", 404, message);
+		}
 		const result = await usersModel.deleteDataById(id);
-
 		if (result.affectedRows > 0) {
+			const imageName = oldData[0].image.split('/').pop();
+			if (imageName != 'avatar.png') {
+				// delete old image when not default image
+				const myRequest = { protocol: req.protocol, host: req.get('host') }
+				deleteImage.delete(myRequest, oldData[0].image);
+			}
 			return myResponse.response(res, "success", { user_id: id }, 200, "Deleted!")
 		} else {
-			const message = `Data with id ${id} is not found`;
-			return myResponse.response(res, "failed", "", 404, message);
+			const message = `Internal Server Error`;
+			return myResponse.response(res, "failed", "", 500, message);
 		}
 	} catch (error) {
 		console.log(error);
