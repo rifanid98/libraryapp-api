@@ -16,7 +16,11 @@ module.exports = {
             }
             if ('sqlMessage' in error) {
                 // var errorMessage = error.sqlMessage;
-                var errorMessage = "Internal Server Error";
+                if (error.errno === 1451) {
+                    var errorMessage = "There is still data related to the file you want to delete";
+                } else {
+                    var errorMessage = "Internal Server Error";
+                }
             }
         }
         return errorMessage;
