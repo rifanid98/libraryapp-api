@@ -296,12 +296,12 @@ async function deleteBook(req, res) {
 		const result = await booksModel.deleteData(id);
 		if (result.affectedRows > 0) {
 			const imageName = oldData[0].image.split('/').pop();
-			if (imageName != 'default.png' && req.file !== undefined) {
+			if (imageName != 'default.png') {
 				// delete old image when not default image
 				const myRequest = { protocol: req.protocol, host: req.get('host') }
 				deleteImage.delete(myRequest, oldData[0].image);
 			}
-			return myResponse.response(res, "failed", "", 200, 'Deleted');
+			return myResponse.response(res, "success", "", 200, 'Deleted');
 		} else {
 			const message = `Internal Server Error`;
 			return myResponse.response(res, "failed", "", 500, message);
