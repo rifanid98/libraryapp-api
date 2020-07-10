@@ -95,6 +95,18 @@ function getDataPending(bookId, userId) {
     })
 }
 
+function getAllDataPending(userId) {
+    return new Promise((resolve, reject) => {
+        const sqlQuery = "SELECT * FROM v_histories WHERE done = 0 AND user_id = ?";
+        conn.query(sqlQuery, userId, function (error, result) {
+            if (error) {
+                reject(error);
+            }
+            resolve(result);
+        })
+    })
+}
+
 function getDataByName(data) {
     return new Promise((resolve, reject) => {
         const sqlQuery = "SELECT * FROM v_histories WHERE ? ";
@@ -139,6 +151,7 @@ module.exports = {
     getDataByUserId,
     getAllDetailData,
     getDataPending,
+    getAllDataPending,
     getDataByName,
     getDataById,
     getBorrowStatus,
