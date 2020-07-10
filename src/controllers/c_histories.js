@@ -128,7 +128,12 @@ async function getPendingHistory(req, res) {
     try {
         const bookId = req.params.bookId;
         const userId = req.params.userId;
-        const result = await historiesModel.getDataPending(bookId, userId);
+        let result;
+        if (bookId === 'all') {
+            result = await historiesModel.getAllDataPending(userId);
+        } else {
+            result = await historiesModel.getDataPending(bookId, userId);
+        }
         return myResponse.response(res, "success", result, 200, "Ok!")
     } catch (error) {
         console.log(error);
