@@ -30,8 +30,8 @@ router.delete('/:id', authMiddleware.checkRole([1]), booksController.deleteBook)
 // Get Book Detail
 router.get('/:id', authMiddleware.checkRole([3, 2, 1]), booksController.getBookDetail);
 // Return a Book
-router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.returnBook);
+router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), booksController.returnBook);
 // Borrow a Book
-router.patch('/:id/borrow', authMiddleware.checkRole([3, 2, 1]), upload.single('image'), booksController.borrowBook);
+router.patch('/:id/borrow', authMiddleware.checkRole([3, 2, 1]), booksController.borrowBook);
 
 module.exports = router;
