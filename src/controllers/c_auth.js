@@ -56,7 +56,7 @@ async function register(req, res) {
 			delete body.password;
 			return myResponse.response(res, "success", body, 201, "Created!");
 		} else {
-			const message = `duplicate body. ${data.username} is exists`;
+			const message = `duplicate data. ${body.username} is exists`;
 			return myResponse.response(res, "failed", "", 409, message);
 		}
 	} catch (error) {
@@ -123,7 +123,9 @@ async function refresh_token(req, res) {
 			delete decoded.exp;
 			decoded.tokenType = 'login';
 			const tokenLogin = jwt.sign(decoded, config.jwtSecretKey, { expiresIn: config.jwtTokenLoginLifeTime });
-			return myResponse.response(res, "success", { tokenLogin: tokenLogin }, 200, "Ok!");
+			decoded.tokenType = 'refresh';
+			const tokenRefresh = jwt.sign(decoded, config.jwtSecretKey, { expiresIn: config.jwtTokenRefreshLifeTime });
+			return myResponse.response(res, "success", { tokenLogin: tokenLogin, tokenRefresh: tokenRefresh }, 200, "Ok!");
 		} else {
 			const message = `Wrong token. Please use refresh token`;
 			return myResponse.response(res, "failed", error, 500, message);
