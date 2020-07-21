@@ -4,6 +4,7 @@
  * Load Model
  */
 const bookGenresModel = require("../models/m_genres");
+const booksModel = require("../models/m_books");
 
 /**
  * custom response helper
@@ -19,9 +20,11 @@ const validate = require('../helpers/joiSchema');
 // import custom error message
 const errorMessage = require("../helpers/myErrorMessage");
 
+
 /**
  * CRUD
  */
+
 async function getGenres(req, res) {
     try {
         const result = await bookGenresModel.getAllData();
@@ -119,10 +122,21 @@ async function getGenreById(req, res) {
     }
 }
 
+async function getUsedGenres(req, res) {
+    try {
+        const result = await booksModel.getUsedGenres();
+        return myResponse.response(res, "success", result, 200, "Ok!")
+    } catch (error) {
+        console.log(error);
+        return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+    }
+}
+
 module.exports = {
     getGenres,
     postGenre,
     patchGenre,
     deleteGenre,
-    getGenreById
+    getGenreById,
+    getUsedGenres
 }
