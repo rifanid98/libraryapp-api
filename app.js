@@ -121,7 +121,8 @@ function connect() {
  * Server Start
  */
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const host = process.env.HOST;
+app.listen(port, host, () => {
     connect();
     console.log("Server is running on port " + port);
 });
