@@ -414,7 +414,6 @@ async function borrowBook(req, res) {
 				const message = `Failed to borrow a book, book not restored`;
 				return myResponse.response(res, "failed", "", 500, message);
 			}
-
 			const message = `Failed to borrow a book, book restored`;
 			return myResponse.response(res, "failed", "", 500, message);
 		}
