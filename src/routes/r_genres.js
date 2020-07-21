@@ -20,6 +20,8 @@ const genresController = require('../controllers/c_genres');
 
 // Get All Genres
 router.get('/', authMiddleware.checkRole([3, 2, 1]), genresController.getGenres);
+// Get All Genres
+router.get('/used/all', authMiddleware.checkRole([3, 2, 1]), genresController.getUsedGenres);
 // Get Detail Genre
 router.get('/:id', authMiddleware.checkRole([3, 2, 1]), genresController.getGenreById);
 // Post a Genre
