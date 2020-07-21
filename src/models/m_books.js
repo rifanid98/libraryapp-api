@@ -224,6 +224,18 @@ function getDataBySort(sort) {
   })
 }
 
+function getUsedGenres(sort) {
+  return new Promise((resolve, reject) => {
+    const sqlQuery = 'SELECT `genres`.* FROM `genres` INNER JOIN `books` WHERE `genres`.`genre_id`=`books`.`genre_id` GROUP BY `genres`.`name`';
+    conn.query(sqlQuery, function (error, result) {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    })
+  })
+}
+
 module.exports = {
   getFieldName,
   getTotalDataCustom,
@@ -235,5 +247,6 @@ module.exports = {
   getDataBySort,
   addData,
   updateData,
-  deleteData
+  deleteData,
+  getUsedGenres
 }
