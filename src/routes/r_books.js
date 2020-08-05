@@ -29,6 +29,10 @@ router.delete('/:id', authMiddleware.checkRole([1]), booksController.deleteBook)
 
 // Get Book Detail
 router.get('/:id', authMiddleware.checkRole([3, 2, 1]), booksController.getBookDetail);
+// Get Trending Books
+router.get('/:id/trending', authMiddleware.checkRole([3, 2, 1]), booksController.getTrendingBooks);
+// Get New Books
+router.get('/:id/new', authMiddleware.checkRole([3, 2, 1]), booksController.getNewBooks);
 // Return a Book
 router.patch('/:id/return', authMiddleware.checkRole([3, 2, 1]), booksController.returnBook);
 // Borrow a Book
