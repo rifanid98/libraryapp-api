@@ -339,6 +339,39 @@ async function getBookDetail(req, res) {
 	}
 }
 
+async function getTrendingBooks(req, res) {
+	try {
+		const id = req.params.id;
+		const result = await booksModel.getDataByTrending(id);
+
+		if (result.length < 1) {
+			const message = `Update data ${oldData[0].title} failed `;
+			return myResponse.response(res, "failed", "", 500, message);
+		}
+
+		return myResponse.response(res, "success", result, 200, "Ok!");
+	} catch (error) {
+		console.log(error);
+		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+	}
+}
+
+async function getNewBooks(req, res) {
+	try {
+		const id = req.params.id;
+		const result = await booksModel.getDataByNew(id);
+
+		if (result.length < 1) {
+			const message = `Update data ${oldData[0].title} failed `;
+			return myResponse.response(res, "failed", "", 500, message);
+		}
+
+		return myResponse.response(res, "success", result, 200, "Ok!");
+	} catch (error) {
+		console.log(error);
+		return myResponse.response(res, "failed", "", 500, errorMessage.myErrorMessage(error, {}));
+	}
+}
 async function borrowBook(req, res) {
 	try {
 		const id = req.params.id;
@@ -507,6 +540,8 @@ async function returnBook(req, res) {
 
 module.exports = {
 	getBookDetail,
+	getTrendingBooks,
+	getNewBooks,
 	postBook,
 	patchBook,
 	deleteBook,
