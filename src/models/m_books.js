@@ -224,6 +224,52 @@ function getDataBySort(sort) {
   })
 }
 
+function getDataByTrending(id) {
+  return new Promise((resolve, reject) => {
+    const sqlQuery = `
+    SELECT 
+      b.*,
+      count(h.book_id) AS trending 
+    FROM 
+      histories AS h 
+    INNER JOIN 
+      books AS b
+    ON 
+      h.book_id = b.book_id
+    WHERE 
+      h.added >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK) 
+    GROUP BY h.book_id 
+    ORDER BY h.added 
+    LIMIT 0, 10
+    `;
+    conn.query(sqlQuery, function (error, result) {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    })
+  })
+}
+
+
+function getDataByNew(id) {
+  return new Promise((resolve, reject) => {
+    const sqlQuery = `
+    SELECT * FROM 
+    books 
+    WHERE 
+    added >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) 
+    LIMIT 0, 10
+    `;
+    conn.query(sqlQuery, function (error, result) {
+      if (error) {
+        reject(error);
+      }
+      resolve(result);
+    })
+  })
+}
+
 function getUsedGenres(sort) {
   return new Promise((resolve, reject) => {
     const sqlQuery = 'SELECT `genres`.* FROM `genres` INNER JOIN `books` WHERE `genres`.`genre_id`=`books`.`genre_id` GROUP BY `genres`.`name`';
@@ -248,5 +294,7 @@ module.exports = {
   addData,
   updateData,
   deleteData,
-  getUsedGenres
+  getUsedGenres,
+  getDataByTrending,
+  getDataByNew
 }
