@@ -361,11 +361,6 @@ async function getNewBooks(req, res) {
 		const id = req.params.id;
 		const result = await booksModel.getDataByNew(id);
 
-		if (result.length < 1) {
-			const message = `Update data ${result[0].title} failed `;
-			return myResponse.response(res, "failed", "", 500, message);
-		}
-
 		return myResponse.response(res, "success", result, 200, "Ok!");
 	} catch (error) {
 		console.log(error);
