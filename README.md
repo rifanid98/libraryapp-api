@@ -1,17 +1,18 @@
-**libraryapp-api** is a simple api endpoint for library application built with Node.js, Express Js as a framework of Node.js and MySQL as a database which has [features](https://github.com/rifanid98/libraryapp-api#features) such as login / register using JWT, pasword hashing, CORS, etc.
+**libraryapp-api** is a simple api endpoint for library application built with Node.js, Express Js as a framework of Node.js and MySQL as a database which has [features](#features) such as login / register using JWT, pasword hashing, CORS, etc.
 
 ## :memo: Table Of Content
 
--   [Prerequisites](https://github.com/rifanid98/libraryapp-api#prerequisites)
--   [Installation](https://github.com/rifanid98/libraryapp-api#installation)
--   [Features](https://github.com/rifanid98/libraryapp-api#features)
--   [Examples](https://github.com/rifanid98/libraryapp-api#examples)
--   [Built wtih](https://github.com/rifanid98/libraryapp-api#features)
--   [Author](https://github.com/rifanid98/libraryapp-api#author)
--   [License](https://github.com/rifanid98/libraryapp-api#license)
+-   [Prerequisites](#prerequisites)
+-   [Installation](#installation)
+-   [Features](#features)
+-   [Examples](#examples)
+-   [Built wtih](#features)
+-   [Author](#author)
+-   [License](#license)
 
 ## Prerequisites
 
+-   NPM or Yarn as package manager.
 -   Node.js installed on the local machine
 -   MySQL intalled on the local machine (ex. XAMPP)
 
@@ -37,9 +38,9 @@
 -   [x] Login/Register with JWT
 -   [x] Password hashing
 
-## Examples
+## Documentation
 
-[How to use](https://github.com/rifanid98/libraryapp-api/blob/master/examples.md)
+[How to use](https://github.com/rifanid98/libraryapp-api/blob/master/docs.md)
 
 ## Built with
 
@@ -51,7 +52,7 @@
 
 ## Author
 
--   [Adnin Rifandi Sutanto Putra](https://www.linkedin.com/in/adnin-rifandi-s-5a9135129/)
+-   [Adnin Rifandi Sutanto Putra](https://www.linkedin.com/in/adnin-rifandi/)
 
 ## License
 
