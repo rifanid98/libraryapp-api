@@ -143,11 +143,13 @@ async function postBook(req, res) {
 
 		if (req.file === undefined) {
 			// set default file when no image to upload
-			data.image = `${config.imageUrlPath(req)}default.png`;
+			data.image = `default.png`;
+			// data.image = `${config.imageUrlPath(req)}default.png`;
 		} else {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				// get the image name and set into data
-				data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
+				data.image = `${req.file.filename}`;
+				// data.image = `${config.imageUrlPath(req)}${req.file.filename}`;
 			} else {
 				// delete new file when not an image
 				const myRequest = { protocol: req.protocol, host: req.get('host') }
@@ -231,7 +233,8 @@ async function patchBook(req, res) {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				data = {
 					...body,
-					image: `${config.imageUrlPath(req)}${req.file.filename}`,
+					image: `${req.file.filename}`,
+					// image: `${config.imageUrlPath(req)}${req.file.filename}`,
 				};
 			} else {
 				// delete new file when not an image
@@ -345,7 +348,7 @@ async function getTrendingBooks(req, res) {
 		const result = await booksModel.getDataByTrending(id);
 
 		if (result.length < 1) {
-			const message = `Update data ${oldData[0].title} failed `;
+			const message = `Update data ${result[0].title} failed `;
 			return myResponse.response(res, "failed", "", 500, message);
 		}
 
