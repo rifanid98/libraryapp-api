@@ -75,7 +75,8 @@ async function postUser(req, res) {
 		} else {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				// get the image name and set into data
-				body.image = `${config.imageUrlPath(req)}${req.file.filename}`;
+				body.image = `${req.file.filename}`;
+				// body.image = `${config.imageUrlPath(req)}${req.file.filename}`;
 			} else {
 				// delete new file when not an image
 				const myRequest = { protocol: req.protocol, host: req.get('host') }
@@ -177,7 +178,8 @@ async function patchUser(req, res) {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				data = {
 					...body,
-					image: `${config.imageUrlPath(req)}${req.file.filename}`,
+					image: `${req.file.filename}`,
+					// image: `${config.imageUrlPath(req)}${req.file.filename}`,
 				};
 			} else {
 				// delete new file when not an image
