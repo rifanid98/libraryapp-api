@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 18 Agu 2020 pada 12.21
+-- Waktu pembuatan: 29 Agu 2020 pada 15.32
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.4.5
 
@@ -74,7 +74,7 @@ CREATE TABLE `books` (
 
 INSERT INTO `books` (`book_id`, `title`, `description`, `image`, `author_id`, `status`, `quantity`, `genre_id`, `added`, `updated`) VALUES
 (22, 'Network Effect', 'Murderbot returns in its highly-anticipated, first, full-length standalone novel.\r\n\r\nYou know that feeling when you’re at work, and you’ve had enough of people, and then the boss walks in with yet another job that needs to be done right this second or the world will end, but all you want to do is go home and binge your favorite shows? And you\'re a sentient murder machine programmed for destruction? Congratulations, you\'re Murderbot.\r\n\r\nCome for the pew-pew space battles, stay for the most relatable A.I. you’ll read this century.\r\n\r\n—\r\n\r\nI’m usually alone in my head, and that’s where 90 plus percent of my problems are.\r\n\r\nWhen Murderbot\'s human associates (not friends, never friends) are captured and another not-friend from its past requires urgent assistance, Murderbot must choose between inertia and drastic action.\r\n\r\nDrastic action it is, then.', '2020-07-20T13:36:11.353ZNetwork-Effect.jpg', 1, 0, 5, 13, '2020-06-11 06:56:40', '2020-06-18 07:58:31'),
-(23, 'The Lincoln Conspiracy: The Secret Plot to Kill America\'s 16th President⁠—and Why It Failed', '\r\nThe Lincoln Conspiracy: The Secret Plot to Kill America\'s 16th President⁠—and Why It Failed\r\nRate this book\r\n1 of 5 stars\r\n2 of 5 stars\r\n3 of 5 stars\r\n4 of 5 stars\r\n5 of 5 stars\r\nThe Lincoln Conspiracy: The Secret Plot to Kill America\'s 16th President⁠—and Why It Failed\r\nby Brad Meltzer (Goodreads Author),\r\nJosh Mensch (Goodreads Author)\r\n4.39  · \r\nRating details ·  500 ratings  ·  89 reviews\r\nEveryone knows the story of Abraham Lincoln’s assassination in 1865, but few are aware of the original conspiracy to kill him four years earlier in 1861, literally on his way to Washington, DC, for his first inauguration.\r\n\r\nThe conspirators were part of a pro-Southern secret society that didn’t want an anti-slavery President in the White House. They planned an elaborate scheme to assassinate the brand new President in a Baltimore train station as Lincoln’s inauguration train passed through en route to the Capital. The plot was investigated by famed detective Allan Pinkerton, who infiltrated the group with undercover agents, including one of the first female private detectives in America. Had the assassination succeeded, there would have been no Lincoln Presidency, and the course of the Civil War and American history would have forever been altered.\r\n\r\nThe bestselling team that brought you The First Conspiracy now turns their attention to the story of the secret society that tried to kill Abraham Lincoln and the undercover detectives who foiled their plans.', '2020-07-20T13:36:40.037Zthe-lincoln-conpiracy.jpg', 2, 0, 5, 12, '2020-06-11 06:56:40', '2020-06-11 07:09:48'),
+(23, 'The Lincoln Conspiracy: The Secret Plot to Kill America\'s 16th President⁠—and Why It Failed', 'Everyone knows the story of Abraham Lincoln’s assassination in 1865, but few are aware of the original conspiracy to kill him four years earlier in 1861, literally on his way to Washington, DC, for his first inauguration.\r\n\r\nThe conspirators were part of a pro-Southern secret society that didn’t want an anti-slavery President in the White House. They planned an elaborate scheme to assassinate the brand new President in a Baltimore train station as Lincoln’s inauguration train passed through en route to the Capital. The plot was investigated by famed detective Allan Pinkerton, who infiltrated the group with undercover agents, including one of the first female private detectives in America. Had the assassination succeeded, there would have been no Lincoln Presidency, and the course of the Civil War and American history would have forever been altered.\r\n\r\nThe bestselling team that brought you The First Conspiracy now turns their attention to the story of the secret society that tried to kill Abraham Lincoln and the undercover detectives who foiled their plans.', '2020-07-20T13:36:40.037Zthe-lincoln-conpiracy.jpg', 2, 0, 5, 12, '2020-06-11 06:56:40', '2020-06-11 07:09:48'),
 (24, 'Why We Act: Turning Bystanders into Moral Rebels', 'Why do good people so often do nothing when a seemingly small action could make a big difference? A pioneering social psychologist explains why moral courage is so rare--and reveals how it can be triggered or trained.\r\n\r\nWe are bombarded every day by reports of bad behavior, from sexual harassment to political corruption and bullying belligerence. It\'s tempting to blame evil acts on evil people, but that leaves the rest us off the hook. Silence, after all, can perpetuate cruelty. Why We Act draws on the latest developments in psychology and neuroscience to tackle an urgent question: Why do so many of us fail to intervene when we\'re needed--and what would it take to make us step up?\r\n\r\nA renowned psychologist who has done pioneering research on social norms, Catherine Sanderson was inspired to write this book when a freshman in her son\'s dorm died twenty hours after a bad fall while drinking. There were many points along the way when a decision to seek help could have saved his life. Why did no one act sooner?\r\n\r\nCutting-edge neuroscience offers part of the answer, showing how deviating from the group activates the same receptors in the brain that are triggered by pain. But Sanderson also points to many ways in which our faulty assumptions about what other people are thinking can paralyze us. And she shares surprisingly effective and simple strategies for resisting the pressure to conform. Moral courage, it turns out, is not innate. Small details and the right training can make a big difference. Inspiring and potentially life transforming, Why We Act reveals that while the urge to do nothing is deeply ingrained, even the most hesitant would-be bystander can learn to be a moral rebel.', '2020-07-20T13:36:53.528Zwhy-we-act.jpg', 3, 0, 5, 5, '2020-06-11 06:59:56', '2020-06-11 07:10:03'),
 (25, 'Future Value: The Battle for Baseball\'s Soul and How Teams Will Find the Next Superstar', ' How to watch baseball and see the future\r\n\r\nFor the modern major league team, player evaluation is a complex, multi-pronged, high-tech pursuit. But far from becoming obsolete in this environment⁠—as Michael Lewis\' Moneyball once forecast⁠—the role of the scout in today\'s game has evolved and even expanded. Rather than being the antithesis of a data-driven approach, scouting now represents an essential analytical component in a team\'s arsenal.\r\n\r\nFuture Value is a thorough dive into the world of the contemporary scout—a world with its own language, methods, metrics, and madness. From rural high schools to elite amateur showcases; from the back fields of spring training to major league draft rooms, FanGraphs\' Eric Longenhagen and Kiley McDaniel break down the key systems and techniques used to assess talent. It\'s a process that has moved beyond the quintessential stopwatches and radar guns to include statistical models, countless measurable indicators, and a broader international reach.\r\n\r\nPractical and probing, discussing wide-ranging topics from tool grades to front office politics, this is an illuminating exploration of what it means to watch baseball like it\'s your job.', '2020-07-20T13:37:08.803Zfuture-value.jpg', 4, 0, 5, 6, '2020-06-11 06:59:56', '2020-06-11 07:10:19'),
 (27, 'The Little Prince', 'Moral allegory and spiritual autobiography, The Little Prince is the most translated book in the French language. With a timeless charm it tells the story of a little boy who leaves the safety of his own tiny planet to travel the universe, learning the vagaries of adult behaviour through a series of extraordinary encounters. His personal odyssey culminates in a voyage to Earth and further adventures.', '2020-07-20T13:37:24.062Zthe-little-prince.jpg', 5, 0, 5, 7, '2020-06-11 07:02:31', '2020-06-11 07:10:51');
@@ -124,34 +124,6 @@ CREATE TABLE `histories` (
   `added` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data untuk tabel `histories`
---
-
-INSERT INTO `histories` (`history_id`, `book_id`, `user_id`, `done`, `added`, `updated`) VALUES
-(1, 22, 12, 1, '2020-07-08 16:46:45', '2020-07-08 16:46:52'),
-(3, 22, 12, 1, '2020-07-21 05:10:59', '2020-07-21 05:11:07'),
-(4, 22, 12, 1, '2020-07-21 05:11:14', '2020-07-21 05:11:20'),
-(5, 22, 12, 1, '2020-07-21 05:39:29', '2020-07-21 05:39:32'),
-(6, 22, 12, 1, '2020-07-21 16:20:08', '2020-07-21 16:20:10'),
-(7, 22, 12, 1, '2020-07-21 16:25:19', '2020-07-21 16:25:21'),
-(8, 22, 12, 1, '2020-07-21 16:27:17', '2020-07-21 16:27:19'),
-(9, 22, 12, 1, '2020-07-21 16:27:30', '2020-07-21 16:27:31'),
-(10, 27, 12, 1, '2020-07-21 16:28:22', '2020-07-21 16:28:24'),
-(11, 22, 12, 1, '2020-07-22 10:54:40', '2020-07-22 10:54:43'),
-(12, 22, 12, 1, '2020-07-22 10:55:58', '2020-07-22 10:56:01'),
-(13, 22, 12, 1, '2020-07-22 11:48:52', '2020-07-22 11:48:55'),
-(17, 22, 12, 1, '2020-08-05 16:52:50', '2020-08-18 01:51:25'),
-(18, 23, 12, 1, '2020-08-05 16:59:12', '2020-08-05 16:59:14'),
-(19, 23, 12, 1, '2020-08-05 16:59:23', '2020-08-05 16:59:26'),
-(20, 24, 12, 1, '2020-08-05 16:59:30', '2020-08-05 16:59:32'),
-(21, 23, 12, 1, '2020-08-18 01:45:47', '2020-08-18 01:50:58'),
-(22, 23, 12, 1, '2020-08-18 01:51:03', '2020-08-18 01:51:05'),
-(23, 23, 12, 1, '2020-08-18 02:38:43', '2020-08-18 02:38:46'),
-(24, 23, 12, 1, '2020-08-18 02:55:27', '2020-08-18 03:26:07'),
-(25, 22, 12, 1, '2020-08-18 03:27:16', '2020-08-18 03:27:24'),
-(26, 23, 12, 1, '2020-08-18 08:36:07', '2020-08-18 08:36:12');
 
 -- --------------------------------------------------------
 
@@ -280,31 +252,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `author_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `author_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT untuk tabel `books`
 --
 ALTER TABLE `books`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
+  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
 
 --
 -- AUTO_INCREMENT untuk tabel `genres`
 --
 ALTER TABLE `genres`
-  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `genre_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT untuk tabel `histories`
 --
 ALTER TABLE `histories`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
