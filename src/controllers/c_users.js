@@ -71,7 +71,8 @@ async function postUser(req, res) {
 
 		if (req.file === undefined) {
 			// set default file when no image to upload
-			body.image = `${config.imageUrlPath(req)}avatar.png`;
+			body.image = `avatar.png`;
+			// body.image = `${config.imageUrlPath(req)}avatar.png`;
 		} else {
 			if (req.file.mimetype === 'image/jpeg' || req.file.mimetype === 'image/png') {
 				// get the image name and set into data
