@@ -26,6 +26,7 @@
     - Import database, select `libraryapp.sql` file from project folder
 4. Start the server:
     - Open root project folder with command line (terminal, linux. cmd, windows. etc.)
+    - Type and run this command `npm install` to install required dependencies.
     - Type and run this command `npm start` to start the server.
     - Make sure there are no other processes that use port 3000
 5. Run app with api testing tools like postman, etc. on http://localhost:3000/libraryapp-api/
