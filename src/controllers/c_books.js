@@ -348,8 +348,8 @@ async function getTrendingBooks(req, res) {
 		const result = await booksModel.getDataByTrending(id);
 
 		if (result.length < 1) {
-			const message = `Update data ${result[0].title} failed `;
-			return myResponse.response(res, "failed", "", 500, message);
+			const message = `Data not found`;
+			return myResponse.response(res, "failed", "", 404, message);
 		}
 
 		return myResponse.response(res, "success", result, 200, "Ok!");
